@@ -3,20 +3,20 @@
  * Zerif integration
  */
 
-add_action( 'elementor/page_templates/canvas/before_content', 'jet_woo_zerif_open_canvas_wrap', - 999 );
-add_action( 'jet-woo-builder/blank-page/before-content', 'jet_woo_zerif_open_canvas_wrap', - 999 );
+add_action( 'elementor/page_templates/canvas/before_content', 'ava_woo_zerif_open_canvas_wrap', - 999 );
+add_action( 'ava-woo-builder/blank-page/before-content', 'ava_woo_zerif_open_canvas_wrap', - 999 );
 
-add_action( 'elementor/page_templates/canvas/after_content', 'jet_woo_zerif_close_canvas_wrap', 999 );
-add_action( 'jet-woo-builder/blank-page/after_content', 'jet_woo_zerif_close_canvas_wrap', 999 );
+add_action( 'elementor/page_templates/canvas/after_content', 'ava_woo_zerif_close_canvas_wrap', 999 );
+add_action( 'ava-woo-builder/blank-page/after_content', 'ava_woo_zerif_close_canvas_wrap', 999 );
 
-add_action( 'wp_enqueue_scripts', 'jet_woo_zerif_enqueue_styles' );
+add_action( 'wp_enqueue_scripts', 'ava_woo_zerif_enqueue_styles' );
 
 /**
  * Open .site-main wrapper for products
  * @return [type] [description]
  */
-function jet_woo_zerif_open_canvas_wrap() {
-	if ( ! is_singular( array( jet_woo_builder_post_type()->slug(), 'product' ) ) ) {
+function ava_woo_zerif_open_canvas_wrap() {
+	if ( ! is_singular( array( ava_woo_builder_post_type()->slug(), 'product' ) ) ) {
 		return;
 	}
 
@@ -27,9 +27,9 @@ function jet_woo_zerif_open_canvas_wrap() {
  * Close .site-main wrapper for products
  * @return [type] [description]
  */
-function jet_woo_zerif_close_canvas_wrap() {
+function ava_woo_zerif_close_canvas_wrap() {
 
-	if ( ! is_singular( array( jet_woo_builder_post_type()->slug(), 'product' ) ) ) {
+	if ( ! is_singular( array( ava_woo_builder_post_type()->slug(), 'product' ) ) ) {
 		return;
 	}
 
@@ -43,11 +43,11 @@ function jet_woo_zerif_close_canvas_wrap() {
  * @access public
  * @return void
  */
-function jet_woo_zerif_enqueue_styles() {
+function ava_woo_zerif_enqueue_styles() {
 	wp_enqueue_style(
-		'jet-woo-builder-zerif',
-		jet_woo_builder()->plugin_url( 'includes/integrations/themes/zerif/assets/css/style.css' ),
+		'ava-woo-builder-zerif',
+		ava_woo_builder()->plugin_url( 'includes/integrations/themes/zerif/assets/css/style.css' ),
 		false,
-		jet_woo_builder()->get_version()
+		ava_woo_builder()->get_version()
 	);
 }

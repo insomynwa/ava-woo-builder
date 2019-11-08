@@ -2,8 +2,8 @@
 /**
  * Silence is golden
  *
- * @package  jet-woo-builder
+ * @package  ava-woo-builder
  * @category Core
- * @author   Zemez
+ * @author   Mezem
  * @license  GPL-2.0+
  */

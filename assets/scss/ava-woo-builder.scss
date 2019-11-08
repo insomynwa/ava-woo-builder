@@ -1,0 +1,93 @@
+@import 'base/mixins';
+
+@import "widgets/single-product-widgets/ava-single-images";
+@import "widgets/single-product-widgets/ava-single-price";
+@import "widgets/single-product-widgets/ava-single-add-to-cart";
+@import "widgets/single-product-widgets/ava-single-rating";
+@import "widgets/single-product-widgets/ava-single-tabs";
+@import "widgets/single-product-widgets/ava-single-badge";
+@import "widgets/single-product-widgets/ava-single-attributes";
+
+@import 'widgets/global-widgets/ava-woo-products';
+@import 'widgets/global-widgets/ava-woo-categories';
+@import 'widgets/global-widgets/ava-woo-products-list';
+@import 'widgets/global-widgets/ava-woo-taxonomy-tiles';
+
+@import 'widgets/archive-product-widgets/ava-archive-product-thumbnail';
+@import 'widgets/archive-product-widgets/ava-archive-product-price';
+@import 'widgets/archive-product-widgets/ava-archive-product-rating';
+@import 'widgets/archive-product-widgets/ava-archive-product-sale-badge';
+@import 'widgets/archive-product-widgets/ava-archive-product-tags';
+@import 'widgets/archive-product-widgets/ava-archive-product-cats';
+@import 'widgets/archive-product-widgets/ava-archive-product-add-to-cart';
+
+@import 'widgets/archive-category-widgets/ava-archive-category-thumbnail';
+
+@import 'widgets/shop-widgets/ava-products-pagination';
+@import 'widgets/shop-widgets/ava-products-navigation';
+@import 'widgets/shop-widgets/ava-products-ordering';
+@import 'widgets/shop-widgets/ava-products-page-title';
+
+@import 'extensions/ava-woo-product-thumb-effects';
+@import 'extensions/ava-woo-carousel';
+@import 'extensions/ava-woo-archive-templates';
+@import 'extensions/ava-woo-quick-view';
+
+@import 'base/grid';
+@import 'base/fonts';
+
+.ava-woo-product-rating{
+	.star{
+		max-width: 17px;
+	}
+}
+
+.product-rating__stars{
+	overflow: hidden;
+	position: relative;
+	height: 1em;
+	line-height: 1;
+	font-size: 1em;
+	width: 5.4em;
+	font-family: 'star';
+	display: inline-block;
+	
+	&::before {
+		content: '\73\73\73\73\73';
+		color: #e7e8e8;
+		float: left;
+		top: 0;
+		left: 0;
+		position: absolute;
+	}
+	
+	span {
+		overflow: hidden;
+		float: left;
+		top: 0;
+		left: 0;
+		position: absolute;
+		padding-top: 1.5em;
+		color: #fdbc32;
+	}
+	
+	span::before {
+		content: '\53\53\53\53\53';
+		top: 0;
+		position: absolute;
+		left: 0;
+	}
+}
+
+.elementor-widget[data-element_type*="ava-woo-builder-archive"]:not(:last-child) {
+	margin-bottom: 0;
+}
+
+.ava-woo-builder{
+	ul.product{
+		&::after,
+		&::before{
+			display: none;
+		}
+	}
+}

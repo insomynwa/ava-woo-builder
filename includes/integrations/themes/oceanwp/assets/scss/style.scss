@@ -4,7 +4,7 @@
 
 @import "woocommerce";
 
-.entry-content .jet-woo-builder {
+.entry-content .ava-woo-builder {
 	.product_meta {
 		> span {
 			display: block;
@@ -54,11 +54,11 @@
 	}
 }
 
-.woocommerce div.product .jet-single-images__wrap .woocommerce-product-gallery .flex-control-thumbs li{
+.woocommerce div.product .ava-single-images__wrap .woocommerce-product-gallery .flex-control-thumbs li{
 	clear: unset!important;
 }
 // TODO: Do this when will work on OceanWP compatibility
-//.elementor-jet-woo-builder-products-ordering {
+//.elementor-ava-woo-builder-products-ordering {
 //	.woocommerce-ordering {
 //		select{
 //			-webkit-appearance: inherit!important;

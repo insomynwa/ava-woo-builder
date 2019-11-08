@@ -2,18 +2,18 @@
 
 	'use strict';
 
-	var JetWooTemplatePopup = {
+	var AvaWooTemplatePopup = {
 
 		init: function() {
 
 			var self = this;
 
 			$( document )
-				.on( 'click.JetWooTemplatePopup', '.page-title-action', self.openPopup )
-				.on( 'click.JetWooTemplatePopup', '.jet-template-popup__overlay', self.closePopup )
-				.on( 'change.JetWooTemplatePopup', '#template_type', self.switchTemplates )
-				.on( 'click.JetWooTemplatePopup', '.jet-template-popup__item--uncheck', self.uncheckItem )
-				.on( 'click.JetWooTemplatePopup', '.jet-template-popup__label', self.isCheckedItem );
+				.on( 'click.AvaWooTemplatePopup', '.page-title-action', self.openPopup )
+				.on( 'click.AvaWooTemplatePopup', '.ava-template-popup__overlay', self.closePopup )
+				.on( 'change.AvaWooTemplatePopup', '#template_type', self.switchTemplates )
+				.on( 'click.AvaWooTemplatePopup', '.ava-template-popup__item--uncheck', self.uncheckItem )
+				.on( 'click.AvaWooTemplatePopup', '.ava-template-popup__label', self.isCheckedItem );
 
 		},
 
@@ -31,7 +31,7 @@
 				value = $this.find('input'),
 				checked = value.prop( "checked" );
 
-			JetWooTemplatePopup.uncheckAll();
+			AvaWooTemplatePopup.uncheckAll();
 
 			if( checked ){
 				$this.addClass( 'is--checked');
@@ -39,7 +39,7 @@
 		},
 
 		uncheckAll: function() {
-			var item = $( '.jet-template-popup__label' );
+			var item = $( '.ava-template-popup__label' );
 
 			if( item.hasClass('is--checked') ){
 				item.removeClass('is--checked');
@@ -49,7 +49,7 @@
 
 		uncheckItem: function() {
 			var $this = $( this ),
-				label = $this.parent().find('.jet-template-popup__label'),
+				label = $this.parent().find('.ava-template-popup__label'),
 				input = label.find('input'),
 				checked = input.prop( "checked" );
 
@@ -61,17 +61,17 @@
 
 		openPopup: function( event ) {
 			event.preventDefault();
-			$( '.jet-template-popup' ).addClass( 'jet-template-popup-active' );
+			$( '.ava-template-popup' ).addClass( 'ava-template-popup-active' );
 
-			JetWooTemplatePopup.uncheckAll();
+			AvaWooTemplatePopup.uncheckAll();
 		},
 
 		closePopup: function() {
-			$( '.jet-template-popup' ).removeClass( 'jet-template-popup-active' );
+			$( '.ava-template-popup' ).removeClass( 'ava-template-popup-active' );
 		}
 
 	};
 
-	JetWooTemplatePopup.init();
+	AvaWooTemplatePopup.init();
 
 })( jQuery );

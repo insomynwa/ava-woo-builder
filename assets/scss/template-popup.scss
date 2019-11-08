@@ -1,4 +1,4 @@
-.jet-template-popup {
+.ava-template-popup {
 	display: none;
 	justify-content: center;
 	align-items: center;
@@ -8,22 +8,22 @@
 	right: 0;
 	bottom: 0;
 	z-index: 999;
-	&.jet-template-popup-active {
+	&.ava-template-popup-active {
 		display: flex;
 	}
 	&[data-refer="plain"] {
-		.jet-template-popup-predesigned {
+		.ava-template-popup-predesigned {
 			display: none;
 		}
-		.jet-template-popup-plain {
+		.ava-template-popup-plain {
 			display: block;
 		}
 	}
 	&[data-refer="predesigned"] {
-		.jet-template-popup-predesigned {
+		.ava-template-popup-predesigned {
 			display: block;
 		}
-		.jet-template-popup-plain {
+		.ava-template-popup-plain {
 			display: none;
 		}
 	}
@@ -37,7 +37,7 @@
 		transition: opacity 200ms linear;
 		opacity: 0;
 		z-index: 1000;
-		.jet-template-popup-active & {
+		.ava-template-popup-active & {
 			opacity: 1;
 		}
 	}
@@ -50,7 +50,7 @@
 		transition: opacity 200ms linear;
 		opacity: 0;
 		z-index: 1001;
-		.jet-template-popup-active & {
+		.ava-template-popup-active & {
 			opacity: 1;
 		}
 	}
@@ -68,7 +68,7 @@
 		padding: 10px;
 	}
 	
-	.jet-template-popup__item--uncheck{
+	.ava-template-popup__item--uncheck{
 		position: absolute;
 		top: 7px;
 		right: 12px;
@@ -86,7 +86,7 @@
 		margin: 0;
 		position: relative;
 		
-		&.is--checked ~ .jet-template-popup__item--uncheck{
+		&.is--checked ~ .ava-template-popup__item--uncheck{
 			display: block;
 		}
 		

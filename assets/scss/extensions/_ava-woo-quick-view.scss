@@ -1,0 +1,168 @@
+.ava-quickview-button {
+	&__container {
+		display: flex;
+		flex-flow: row nowrap;
+		justify-content: center;
+	}
+
+	&__link {
+		position: relative;
+		overflow: hidden;
+		max-width: 100%;
+		box-sizing: border-box;
+		cursor: pointer;
+		transform: translateZ(0);
+		padding: 10px 15px;
+		transition: .3s all ease;
+
+		.ava-quickview-button__state {
+			color: #fff;
+		}
+
+		&:hover{
+			.ava-quickview-button__state {
+				color: #fff;
+			}
+		}
+	}
+
+	&__icon{
+		margin-right: 5px;
+		margin-left: 5px;
+		transition: none;
+	}
+
+	&__plane {
+		display: block;
+		width: 100%;
+		height: 100%;
+		top: 0;
+		left: 0;
+		position: absolute;
+
+		&-normal {
+			z-index: -1;
+		}
+	}
+
+	&__state {
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		align-items: center;
+		box-sizing: border-box;
+
+		&-normal {
+			position: relative;
+			width: 100%;
+			height: 100%;
+			z-index: 2;
+		}
+	}
+
+	&__icon {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	&__label {
+
+	}
+}
+
+.ava-quickview-button__link {
+	&.ava-quickview-button__link--icon-left {
+		.ava-quickview-button__state {
+			flex-direction: row;
+
+			.ava-quickview-button__icon {
+				order: 1;
+			}
+
+			.ava-quickview-button__label {
+				order: 2;
+			}
+		}
+	}
+
+	&.ava-quickview-button__link--icon-top {
+		.ava-quickview-button__state {
+			flex-direction: column;
+
+			.ava-quickview-button__icon {
+				order: 1;
+			}
+
+			.ava-quickview-button__label {
+				order: 2;
+			}
+		}
+	}
+
+	&.ava-quickview-button__link--icon-right {
+		.ava-quickview-button__state {
+			flex-direction: row;
+
+			.ava-quickview-button__icon {
+				order: 2;
+			}
+
+			.ava-quickview-button__label {
+				order: 1;
+			}
+		}
+	}
+
+	&.ava-quickview-button__link--icon-bottom {
+		.ava-quickview-button__state {
+			flex-direction: column;
+
+			.ava-quickview-button__icon {
+				order: 2;
+			}
+
+			.ava-quickview-button__label {
+				order: 1;
+			}
+		}
+	}
+}
+
+.ava-quickview-button__link[data-widget-id="default"]{
+
+	.ava-quickview-button__state {
+		color: #fff;
+	}
+
+	.ava-quickview-button__plane {
+		&-normal {
+			background-color: #96588a;
+		}
+	}
+
+	&:hover{
+		.ava-quickview-button__state {
+			color: #fff;
+		}
+
+		.ava-quickview-button__plane {
+			&-normal {
+				background-color: lighten( #96588a, 10% );
+			}
+		}
+	}
+}
+
+.products{
+	.product{
+		.ava-quickview-button__container{
+			justify-content: flex-start;
+
+			.ava-quickview-button__link{
+				margin-top: 10px;
+				margin-bottom: 10px;
+			}
+		}
+	}
+}

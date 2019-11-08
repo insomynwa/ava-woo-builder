@@ -17,16 +17,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<body <?php body_class(); ?>>
 		<?php
 
-		do_action( 'jet-woo-builder/blank-page/before-content' );
+		do_action( 'ava-woo-builder/blank-page/before-content' );
 
 		while ( have_posts() ) :
 			the_post();
 
-			include jet_woo_builder()->get_template( 'woocommerce/content-single-product.php' );
+			include ava_woo_builder()->get_template( 'woocommerce/content-single-product.php' );
 
 		endwhile;
 
-		do_action( 'jet-woo-builder/blank-page/after-content' );
+		do_action( 'ava-woo-builder/blank-page/after-content' );
 
 		wp_footer();
 		?>

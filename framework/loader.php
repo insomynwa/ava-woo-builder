@@ -5,13 +5,13 @@
  * How to use:
  *
  * 1. Copy and include this class into your theme/plugin
- * 2. Add unique prefix for the class name, e.g. - Twentyseventeen_Jet_Woo_Builder_CX_Loader
+ * 2. Add unique prefix for the class name, e.g. - Twentyseventeen_Ava_Woo_Builder_CX_Loader
  * 3. Initialize loader on after_setup_theme hook with priority -20, Example:
  *
  * add_action( 'after_setup_theme', 'twentyseventeen_framework_loader', -20 );
  * function twentyseventeen_framework_loader() {
  *     require get_theme_file_path( 'framework/loader.php' );
- *     new Twentyseventeen_Jet_Woo_Builder_CX_Loader(
+ *     new Twentyseventeen_Ava_Woo_Builder_CX_Loader(
  *         array(
  *             get_theme_file_path( 'framework/modules/module-1/module-1.php' ),
  *             get_theme_file_path( 'framework/modules/module-2/module-2.php' ),
@@ -31,12 +31,12 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-if ( ! class_exists( 'Jet_Woo_Builder_CX_Loader' ) ) {
+if ( ! class_exists( 'Ava_Woo_Builder_CX_Loader' ) ) {
 
 	/**
-	 * Define Jet_Woo_Builder_CX_Loader class
+	 * Define Ava_Woo_Builder_CX_Loader class
 	 */
-	class Jet_Woo_Builder_CX_Loader {
+	class Ava_Woo_Builder_CX_Loader {
 
 		/**
 		 * Key for object cache where are stored information about all modules in current environment

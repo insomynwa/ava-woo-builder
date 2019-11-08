@@ -3,9 +3,9 @@
  * Avada integration
  */
 
-add_action( 'jet-smart-filters/providers/woocommerce-archive/before-ajax-content', 'jet_woo_astra_compatibility', 1 );
+add_action( 'ava-smart-filters/providers/woocommerce-archive/before-ajax-content', 'ava_woo_astra_compatibility', 1 );
 
-function jet_woo_astra_compatibility(){
+function ava_woo_astra_compatibility(){
 
 	if( class_exists( 'Astra_Woocommerce' ) ){
 		$astra = new Astra_Woocommerce();

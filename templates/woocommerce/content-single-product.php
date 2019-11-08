@@ -27,7 +27,7 @@ if ( $elementor->editor->is_edit_mode() ){
 	if ( is_product() || ( ! empty( $post->post_content ) && strstr( $post->post_content, '[product_page' ) ) ) {
 		printf(
 			'<h5>%s</h5>',
-			esc_html__( 'JetWooBuilder Template is enabled, however, it can&rsquo;t be displayed in shortcode when you&rsquo;re on Elementor editor page.', 'jet-woo-builder' )
+			esc_html__( 'AvaWooBuilder Template is enabled, however, it can&rsquo;t be displayed in shortcode when you&rsquo;re on Elementor editor page.', 'ava-woo-builder' )
 		);
 		return;
 	}
@@ -47,7 +47,7 @@ if ( post_password_required() ) {
 
 ?>
 <div id="product-<?php the_ID(); ?>" <?php post_class(); ?>><?php
-	$template = apply_filters( 'jet-woo-builder/current-template/template-id', jet_woo_builder_integration_woocommerce()->current_single_template() );
+	$template = apply_filters( 'ava-woo-builder/current-template/template-id', ava_woo_builder_integration_woocommerce()->current_single_template() );
 
 	if ( class_exists( 'Elementor\Plugin' ) ) {
 		echo $elementor->frontend->get_builder_content( $template, false );

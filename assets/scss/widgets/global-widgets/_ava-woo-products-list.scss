@@ -1,0 +1,132 @@
+/**
+	 * Ava products list
+	 */
+.ava-woo-products-list {
+	list-style: none;
+	margin: 0;
+
+	.ava-compare-button__link,
+	.ava-wishlist-button__link {
+		margin: 5px 10px;
+	}
+	
+	.ava-woo-product-title {
+		font-size: 18px;
+	}
+	
+	.ava-woo-product-rating {
+		margin: 5px 0 5px 0;
+	}
+	
+	.ava-woo-products-list__item {
+		overflow: hidden;
+	}
+	
+	.ava-woo-product-price {
+		ins {
+			border: none;
+			font-style: normal;
+		}
+	}
+	
+	.ava-woo-products-list__item-img {
+		overflow: hidden;
+	}
+	
+	.ava-woo-product-thumbnail {
+		font-size: 0;
+		
+		img {
+			width: 100%;
+		}
+	}
+	
+	.ava-woo-product-button {
+		.button {
+			margin: 10px 0 10px 0;
+		}
+		
+		&.is--default{
+			.ajax_add_to_cart{
+				&.loading {
+					position: relative;
+					opacity: 0.25;
+					padding-right: 30px!important;
+					
+					&::after {
+						font-family: 'WooCommerce';
+						content: '\e01c';
+						vertical-align: top;
+						font-weight: 400;
+						position: absolute;
+						top: 50%;
+						right: 9px;
+						margin-top: -9px;
+						animation: spin 2s linear infinite;
+						font-size: 16px;
+						line-height: 1;
+					}
+				}
+				
+				&.added::after {
+					font-family: 'WooCommerce';
+					content: '\e017';
+					margin-left: 10px;
+					font-weight: 400;
+				}
+			}
+		}
+	}
+	
+	.ava-woo-products-list__inner-box {
+		display: flex;
+		flex-grow: 1;
+		width: 100%;
+		box-sizing: border-box;
+	}
+	
+	.ava-woo-product-categories,
+	.ava-woo-product-tags {
+		ul {
+			margin: 0;
+			list-style: none;
+			
+			> li {
+				display: inline-block;
+			}
+		}
+	}
+	
+	&.products-layout-left {
+		.ava-woo-products-list__inner-box {
+			flex-direction: row;
+			flex-wrap: wrap;
+		}
+	}
+	
+	&.products-layout-right {
+		.ava-woo-products-list__inner-box {
+			flex-direction: row-reverse;
+			flex-wrap: wrap;
+		}
+	}
+	
+	&.products-layout-top {
+		.ava-woo-products-list__inner-box {
+			flex-direction: column;
+			flex-wrap: wrap;
+			align-items: center;
+		}
+	}
+	
+	// remove added to cart button
+	.added_to_cart.wc-forward {
+		display: none !important;
+	}
+}
+
+.ava-woo-products-list__item-content {
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+}

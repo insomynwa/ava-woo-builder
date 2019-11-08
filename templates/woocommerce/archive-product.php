@@ -19,17 +19,17 @@ defined( 'ABSPATH' ) || exit;
 
 get_header( 'shop' );
 
-do_action( 'jet-woo-builder/woocommerce/before-main-content' );
+do_action( 'ava-woo-builder/woocommerce/before-main-content' );
 
 $wc_data = new WC_Structured_Data;
 $wc_data->generate_product_data();
-$template = apply_filters( 'jet-woo-builder/current-template/template-id', jet_woo_builder_integration_woocommerce()->get_custom_shop_template() );
+$template = apply_filters( 'ava-woo-builder/current-template/template-id', ava_woo_builder_integration_woocommerce()->get_custom_shop_template() );
 
 if ( class_exists( 'Elementor\Plugin' ) ) {
 	$elementor = Elementor\Plugin::instance();
 	echo $elementor->frontend->get_builder_content( $template, false );
 }
 
-do_action( 'jet-woo-builder/woocommerce/after-main-content' );
+do_action( 'ava-woo-builder/woocommerce/after-main-content' );
 
 get_footer( 'shop' );
