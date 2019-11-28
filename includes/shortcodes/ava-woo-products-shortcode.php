@@ -589,6 +589,10 @@ class Ava_Woo_Products_Shortcode extends Ava_Woo_Builder_Shortcode_Base {
 	 */
 	public function get_wc_catalog_ordering_args( $query_args ) {
 
+		if ( !isset( $query_args['orderby'] ) ){
+            $query_args['orderby'] = 'date';
+        }
+
 		// @codingStandardsIgnoreStart
 		$ordering_args                = WC()->query->get_catalog_ordering_args( $query_args['orderby'], $query_args['order'] );
 		$query_args['orderby']        = $ordering_args['orderby'];

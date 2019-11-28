@@ -45,7 +45,7 @@ class Ava_Woo_Builder_Plugin_Changelog {
 		add_filter( 'plugins_api',                           array( $this, 'plugins_api_filter' ), 10, 3 );
 		add_filter( 'pre_set_site_transient_update_plugins', array( $this, 'delete_transients' ),  50 );
 
-		// add_filter( 'plugin_row_meta', array( $this, 'plugin_row_meta' ), 10, 2 );
+		// add_filter( 'plugin_row_meta', array( $this, 'plugin_row_meta' ), 10, 3 );
 	}
 
 	public function plugins_api_filter( $_data, $_action = '', $_args = null ) {
@@ -120,7 +120,7 @@ class Ava_Woo_Builder_Plugin_Changelog {
 
 		$plugin = $this->api['slug'] . '/' . $this->api['slug'] . '.php';
 
-		if ( $plugin === $plugin_file ) {
+		if ( $plugin === $plugin_file && empty( $plugin_data['update'] ) ) {
 
 			$plugin_meta['view-details'] = sprintf( '<a href="%s" class="thickbox open-plugin-details-modal" aria-label="%s" data-title="%s">%s</a>',
 				esc_url( network_admin_url( 'plugin-install.php?tab=plugin-information&plugin=' . $this->api['slug'] . '&TB_iframe=true&width=600&height=550' ) ),

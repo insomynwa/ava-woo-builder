@@ -30,6 +30,8 @@ if ( ! class_exists( 'Ava_Woo_Builder_Popup_Package' ) ) {
 			add_filter( 'ava-popup/widget-extension/widget-before-render-settings', array( $this, 'pass_woo_builder_trigger' ), 10, 2 );
 			add_filter( 'ava-popup/ajax-request/get-elementor-content', array( $this, 'get_popup_content' ), 10, 2 );
 
+			add_action( 'ava-woo-builder/popup-generator/after-added-to-cart/cart-popup', array( $this, 'get_cart_popup_data_attrs' ), 10, 2 );
+
 			// Add Quick View buttons controls to Products Grid widget
 			add_action( 'elementor/element/ava-woo-products/section_dots_style/after_section_end', array( $this, 'register_quickview_button_content_controls' ) , 10, 2 );
 			add_action( 'elementor/element/ava-woo-products/section_dots_style/after_section_end', array( $this, 'register_quickview_button_style_controls' ) , 10, 2 );
@@ -120,6 +122,7 @@ if ( ! class_exists( 'Ava_Woo_Builder_Popup_Package' ) ) {
 		 */
 		public function register_controls( $manager ) {
 			$templates = ava_woo_builder_post_type()->get_templates_list_for_options( 'single' );
+			$avaliable_popups = Ava_Popup_Utils::get_avaliable_popups();
 
 			$manager->add_control(
 				'ava_woo_builder_qv',
@@ -146,6 +149,48 @@ if ( ! class_exists( 'Ava_Woo_Builder_Popup_Package' ) ) {
 					),
 				)
 			);
+			
+			$manager->add_control(
+				'ava_woo_builder_cart_popup',
+				array(
+					'label'        => esc_html__( 'Ava Woo Builder Cart PopUp', 'ava-woo-builder' ),
+					'description'  => esc_html__( 'This options works only with Products Grid, Product List, Archive Add to Cart widgets and open popup after product added to cart.', 'ava-woo-builder' ),
+					'type'         => Elementor\Controls_Manager::SWITCHER,
+					'label_on'     => esc_html__( 'Yes', 'ava-woo-builder' ),
+					'label_off'    => esc_html__( 'No', 'ava-woo-builder' ),
+					'return_value' => 'yes',
+					'default'      => '',
+				)
+			);
+			
+			$manager->add_control(
+				'ava_woo_builder_cart_popup_template',
+				array(
+					'type'      => Elementor\Controls_Manager::SELECT,
+					'label'     => esc_html__( 'Template', 'ava-woo-builder' ),
+					'default'   => '',
+					'options'   => $avaliable_popups,
+					'condition' => array(
+						'ava_woo_builder_cart_popup' => 'yes',
+					),
+				)
+			);
+
+		}
+		
+		/**
+		 * If cart popup option enable - set appropriate key and popup id in data attribute.
+		 *
+		 * @param $popup_enable
+		 * @param $popup_id
+		 * @return bool|int
+		 */
+		public function get_cart_popup_data_attrs( $popup_enable, $popup_id) {
+			if ( ! $popup_enable ) {
+				return false;
+			}
+			
+			return printf( 'data-cart-popup-enable=%1s data-cart-popup-id=%2s', json_encode( $popup_enable ), $popup_id );
 
 		}
 

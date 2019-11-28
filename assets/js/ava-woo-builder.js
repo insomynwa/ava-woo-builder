@@ -21,6 +21,7 @@
 			$( document ).on( 'ava-filter-content-rendered', AvaWooBuilder.reInitCarousel );
 			elementorFrontend.hooks.addFilter( 'ava-popup/widget-extensions/popup-data', AvaWooBuilder.prepareAvaPopup );
 			$( window ).on( 'ava-popup/render-content/ajax/success', AvaWooBuilder.avaPopupLoaded );
+			$( document ).on( 'wc_update_cart added_to_cart', AvaWooBuilder.avaCartPopupOpen);
 
 		},
 
@@ -183,6 +184,22 @@
 
 			$target.slick( slickOptions );
 		},
+		
+		avaCartPopupOpen: function ( event ) {
+			var $target_enable = $( event.currentTarget.activeElement ).parents('.ava-woo-products, .ava-woo-products-list, .ava-woo-builder-archive-add-to-cart').data('cart-popup-enable'),
+				$target_id     = $( event.currentTarget.activeElement ).parents('.ava-woo-products, .ava-woo-products-list, .ava-woo-builder-archive-add-to-cart').data('cart-popup-id');
+			
+			$target_id = $($target_id)[0];
+			
+			if ( $target_enable ) {
+				$( window ).trigger( {
+					type: 'ava-popup-open-trigger',
+					popupData: {
+						popupId: 'ava-popup-' + $target_id
+					}
+				} );
+			}
+		}
 
 	};
 

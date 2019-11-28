@@ -59,18 +59,22 @@ class Ava_Woo_Categories extends Ava_Woo_Builder_Base {
 			)
 		);
 
-		$attributes = $this->__shortcode()->get_atts();
+		if ( $this->__shortcode() ) {
 
-		foreach ( $attributes as $attr => $settings ) {
+			$attributes = $this->__shortcode()->get_atts();
 
-			if ( empty( $settings['type'] ) ) {
-				continue;
-			}
+			foreach ( $attributes as $attr => $settings ) {
 
-			if ( ! empty( $settings['responsive'] ) ) {
-				$this->add_responsive_control( $attr, $settings );
-			} else {
-				$this->add_control( $attr, $settings );
+				if ( empty( $settings['type'] ) ) {
+					continue;
+				}
+
+				if ( ! empty( $settings['responsive'] ) ) {
+					$this->add_responsive_control( $attr, $settings );
+				} else {
+					$this->add_control( $attr, $settings );
+				}
+
 			}
 
 		}

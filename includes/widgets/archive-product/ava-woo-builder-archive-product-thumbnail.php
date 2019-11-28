@@ -183,7 +183,10 @@ class Ava_Woo_Builder_Archive_Product_Thumbnail extends Widget_Base {
 		echo ava_woo_builder_template_functions()->get_product_thumbnail(
 			$settings['archive_thumbnail_size'],
 			true,
-			array( 'class' => 'ava-woo-builder-archive-product-image' )
+			array(
+				'class'        => 'ava-woo-builder-archive-product-image',
+				'data-no-lazy' => '1',
+				)
 		);
 		echo $close_link;
 		echo '</div>';

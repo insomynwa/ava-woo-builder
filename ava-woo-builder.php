@@ -3,7 +3,7 @@
  * Plugin Name: Avator Woo Builder
  * Description: Elementor WooCommerce add-on plugin
  * Author: Mr.Lorem
- * Version: 1.4.2
+ * Version: 1.4.3
  *
  * Text Domain: ava-menu
  * Domain Path: /languages
@@ -45,7 +45,7 @@ if ( ! class_exists( 'Ava_Woo_Builder' ) ) {
 		 *
 		 * @var string
 		 */
-		private $version = '1.4.2';
+		private $version = '1.4.3';
 
 		/**
 		 * Plugin properties

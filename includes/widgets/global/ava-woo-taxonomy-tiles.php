@@ -233,6 +233,14 @@ class Ava_Woo_Taxonomy_Tiles extends Ava_Woo_Builder_Base {
 		$args            = wp_parse_args( $args, $defaults );
 		$taxonomies      = get_terms( $settings['taxonomy'], $args );
 
+		if ( $args['orderby'] === 'rand') {
+			$terms_count = count($taxonomies);
+
+			shuffle( $taxonomies);
+
+			return array_slice( $taxonomies, 0, $terms_count );
+		}
+
 		return $taxonomies;
 
 	}
@@ -242,8 +250,8 @@ class Ava_Woo_Taxonomy_Tiles extends Ava_Woo_Builder_Base {
 	 *
 	 * @return void|null
 	 */
-	public function __get_tax_bg( $taxonomy ) {
-		$thumbnail_id = get_term_meta( $taxonomy->term_id, 'thumbnail_id', true );
+	public function __get_tax_bg( $taxonomy, $key ) {
+		$thumbnail_id = get_term_meta( $taxonomy->term_id, $key, true );
 
 		if ( $thumbnail_id ) {
 			$thumb = wp_get_attachment_url( $thumbnail_id );
@@ -456,10 +464,10 @@ class Ava_Woo_Taxonomy_Tiles extends Ava_Woo_Builder_Base {
 				'type'      => 'select',
 				'label'     => esc_html__( 'Show:', 'ava-woo-builder' ),
 				'default'   => 'product_cat',
-				'options'   => array(
+				'options'   => apply_filters( 'ava-woo-builder/ava-woo-taxonomy-tiles/taxonomy_options', array(
 					'product_tag' => esc_html__( 'Tags', 'ava-woo-builder' ),
 					'product_cat' => esc_html__( 'Categories', 'ava-woo-builder' ),
-				),
+				) ),
 				'separator' => 'before'
 			)
 		);
@@ -529,12 +537,15 @@ class Ava_Woo_Taxonomy_Tiles extends Ava_Woo_Builder_Base {
 		$this->add_control(
 			'order',
 			array(
-				'type'    => 'select',
-				'label'   => esc_html__( 'Order by', 'ava-woo-builder' ),
-				'default' => 'asc',
-				'options' => array(
+				'type'      => 'select',
+				'label'     => esc_html__( 'Order by', 'ava-woo-builder' ),
+				'default'   => 'asc',
+				'options'   => array(
 					'asc'  => esc_html__( 'ASC', 'ava-woo-builder' ),
 					'desc' => esc_html__( 'DESC', 'ava-woo-builder' ),
+				),
+				'condition' => array(
+					'sort_by!' => 'rand',
 				),
 			)
 		);
@@ -549,6 +560,7 @@ class Ava_Woo_Taxonomy_Tiles extends Ava_Woo_Builder_Base {
 					'name'  => esc_html__( 'Name', 'ava-woo-builder' ),
 					'id'    => esc_html__( 'IDs', 'ava-woo-builder' ),
 					'count' => esc_html__( 'Count', 'ava-woo-builder' ),
+					'rand'  => esc_html__( 'Random', 'ava-woo-builder' ),
 				),
 			)
 		);

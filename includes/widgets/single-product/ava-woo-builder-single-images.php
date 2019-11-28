@@ -125,6 +125,18 @@ class Ava_Woo_Builder_Single_Images extends Ava_Woo_Builder_Base {
 			)
 		);
 
+		$this->add_responsive_control(
+			'main_image_border_radius',
+			array(
+				'label'      => esc_html__( 'Border Radius', 'ava-woo-builder' ),
+				'type'       => Controls_Manager::DIMENSIONS,
+				'size_units' => array( 'px', '%' ),
+				'selectors'  => array(
+					'{{WRAPPER}} ' . $css_scheme['main_image'] => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				),
+			)
+		);
+
 		$this->add_group_control(
 			Group_Control_Box_Shadow::get_type(),
 			array(
@@ -194,6 +206,18 @@ class Ava_Woo_Builder_Single_Images extends Ava_Woo_Builder_Base {
 			array(
 				'name'     => 'image_thumbnails_border',
 				'selector' => '{{WRAPPER}} ' . $css_scheme['thumbnails_img'],
+			)
+		);
+
+		$this->add_responsive_control(
+			'image_thumbnails_border_radius',
+			array(
+				'label'      => esc_html__( 'Border Radius', 'ava-woo-builder' ),
+				'type'       => Controls_Manager::DIMENSIONS,
+				'size_units' => array( 'px', '%' ),
+				'selectors'  => array(
+					'{{WRAPPER}} ' . $css_scheme['thumbnails_img'] => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				),
 			)
 		);
 

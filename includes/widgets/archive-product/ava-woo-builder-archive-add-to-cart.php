@@ -376,9 +376,12 @@ class Ava_Woo_Builder_Archive_Add_To_Cart extends Widget_Base {
 		return sprintf( '{{WRAPPER}} .%1$s %2$s', $this->get_name(), $el );
 	}
 
-	public static function render_callback() {
+	public static function render_callback( $settings = array() ) {
 		global $product;
+
 		$ajax_add_to_cart_enabled = 'yes' === get_option( 'woocommerce_enable_ajax_add_to_cart' ) ? true : false;
+		$popup_enable = ! empty( $settings['ava_woo_builder_cart_popup'] ) ? esc_attr( $settings['ava_woo_builder_cart_popup'] ) : false;
+		$popup_id     = ! empty( $settings['ava_woo_builder_cart_popup_template'] ) ? esc_attr( $settings['ava_woo_builder_cart_popup_template'] ) : '';
 
 		$args['class'] = implode(
 			' ',
@@ -392,18 +395,28 @@ class Ava_Woo_Builder_Archive_Add_To_Cart extends Widget_Base {
 			)
 		);
 
-		echo '<div class="ava-woo-builder-archive-add-to-cart">';
+		if ( $popup_enable ) {
+			echo '<div class="ava-woo-builder-archive-add-to-cart" data-cart-popup-enable=' . json_encode( $popup_enable ) . ' data-cart-popup-id=' . $popup_id . ' >';
+		} else {
+			echo '<div class="ava-woo-builder-archive-add-to-cart">';
+		}
 		woocommerce_template_loop_add_to_cart( $args );
 		echo '</div>';
 
 	}
 
 	protected function render() {
+		$settings = $this->get_settings();
+
+		$macros_settings = array(
+			'ava_woo_builder_cart_popup'          => json_encode( ! empty( $settings['ava_woo_builder_cart_popup'] ) ? esc_attr( $settings['ava_woo_builder_cart_popup'] ) : false ),
+			'ava_woo_builder_cart_popup_template' => ! empty( $settings['ava_woo_builder_cart_popup_template'] ) ? esc_attr( $settings['ava_woo_builder_cart_popup_template'] ) : '',
+		);
 
 		if ( ava_woo_builder_tools()->is_builder_content_save() ) {
-			echo ava_woo_builder()->parser->get_macros_string( $this->get_name() );
+			echo ava_woo_builder()->parser->get_macros_string( $this->get_name(), $macros_settings );
 		} else {
-			echo self::render_callback();
+			echo self::render_callback( $macros_settings );
 		}
 
 	}

@@ -54,16 +54,16 @@ if ( ! class_exists( 'Ava_Woo_Builder_Template_Functions' ) ) {
 		 *
 		 * @param string $image_size
 		 * @param bool $use_thumb_effect
-		 * @param string $attr
+		 * @param array $attr
 		 *
 		 * @return mixed|string|void
 		 */
-		public function get_product_thumbnail( $image_size = 'thumbnail_size', $use_thumb_effect = false, $attr = '' ) {
+		public function get_product_thumbnail( $image_size = 'thumbnail_size', $use_thumb_effect = false, $attr = array() ) {
 			global $product;
 
 			$thumbnail_id        = get_post_thumbnail_id( $product->get_id() );
-			$enable_thumb_effect = filter_var( ava_woo_builder_settings()->get( 'enable_product_thumb_effect' ), FILTER_VALIDATE_BOOLEAN );
-			$placeholder_src     = Elementor\Utils::get_placeholder_image_src();
+			$placeholder_src     = apply_filters( 'ava-woo-builder/template-functions/product-thumbnail-placeholder', Elementor\Utils::get_placeholder_image_src() );
+			$attr                = array( 'data-no-lazy' => '1' );
 
 			if ( empty( $thumbnail_id ) ) {
 				return sprintf( '<img src="%s" alt="">', $placeholder_src );

@@ -32,6 +32,16 @@ class Ava_Woo_Products_List_Shortcode extends Ava_Woo_Builder_Shortcode_Base {
 					'top'   => esc_html__( 'Image Top', 'ava-woo-builder' ),
 				),
 			),
+			'use_current_query'     => array(
+				'type'         => 'switcher',
+				'label'        => esc_html__( 'Use Current Query', 'ava-woo-builder' ),
+				'description'  => esc_html__( 'This option works only on the shop archive page, and allows you to display products for current categories, tags and taxonomies.', 'ava-woo-builder' ),
+				'label_on'     => esc_html__( 'Yes', 'ava-woo-builder' ),
+				'label_off'    => esc_html__( 'No', 'ava-woo-builder' ),
+				'return_value' => 'yes',
+				'default'      => '',
+				'separator'    => 'before'
+			),
 			'number'          => array(
 				'type'    => 'number',
 				'label'   => esc_html__( 'Products Number', 'ava-woo-builder' ),
@@ -41,10 +51,13 @@ class Ava_Woo_Products_List_Shortcode extends Ava_Woo_Builder_Shortcode_Base {
 				'step'    => 1,
 			),
 			'products_query'  => array(
-				'type'    => 'select',
-				'label'   => esc_html__( 'Query products by', 'ava-woo-builder' ),
-				'default' => 'all',
-				'options' => $this->get_products_query_type()
+				'type'      => 'select',
+				'label'     => esc_html__( 'Query products by', 'ava-woo-builder' ),
+				'default'   => 'all',
+				'options'   => $this->get_products_query_type(),
+				'condition' => array(
+					'use_current_query!' => 'yes'
+				)
 			),
 			'products_ids'    => array(
 				'type'      => 'text',
@@ -52,7 +65,8 @@ class Ava_Woo_Products_List_Shortcode extends Ava_Woo_Builder_Shortcode_Base {
 				'label_block'=> true,
 				'default'   => '',
 				'condition' => array(
-					'products_query' => array( 'ids' ),
+					'products_query'     => array( 'ids' ),
+					'use_current_query!' => 'yes'
 				),
 			),
 			'products_cat'    => array(
@@ -62,7 +76,8 @@ class Ava_Woo_Products_List_Shortcode extends Ava_Woo_Builder_Shortcode_Base {
 				'multiple'  => true,
 				'options'   => $this->get_product_categories(),
 				'condition' => array(
-					'products_query' => array( 'category' ),
+					'products_query'     => array( 'category' ),
+					'use_current_query!' => 'yes'
 				),
 			),
 			'products_tag'    => array(
@@ -72,7 +87,8 @@ class Ava_Woo_Products_List_Shortcode extends Ava_Woo_Builder_Shortcode_Base {
 				'multiple'  => true,
 				'options'   => $this->get_product_tags(),
 				'condition' => array(
-					'products_query' => array( 'tag' ),
+					'products_query'     => array( 'tag' ),
+					'use_current_query!' => 'yes'
 				),
 			),
 			'products_order'  => array(
@@ -80,12 +96,16 @@ class Ava_Woo_Products_List_Shortcode extends Ava_Woo_Builder_Shortcode_Base {
 				'label'   => esc_html__( 'Order by', 'ava-woo-builder' ),
 				'default' => 'default',
 				'options' => array(
-					'default' => esc_html__( 'Date', 'ava-woo-builder' ),
-					'price'   => esc_html__( 'Price', 'ava-woo-builder' ),
-					'rand'    => esc_html__( 'Random', 'ava-woo-builder' ),
-					'sales'   => esc_html__( 'Sales', 'ava-woo-builder' ),
-					'rated'   => esc_html__( 'Top Rated', 'ava-woo-builder' ),
+					'default'   => esc_html__( 'Date', 'ava-woo-builder' ),
+					'price'     => esc_html__( 'Price', 'ava-woo-builder' ),
+					'rand'      => esc_html__( 'Random', 'ava-woo-builder' ),
+					'sales'     => esc_html__( 'Sales', 'ava-woo-builder' ),
+					'rated'     => esc_html__( 'Top Rated', 'ava-woo-builder' ),
+					'current'   => esc_html__( 'Current', 'ava-woo-builder' ),
 				),
+				'condition' => array(
+					'use_current_query!' => 'yes'
+				)
 			),
 			'show_title'      => array(
 				'type'         => 'switcher',
@@ -124,6 +144,17 @@ class Ava_Woo_Products_List_Shortcode extends Ava_Woo_Builder_Shortcode_Base {
 				'label_off'    => esc_html__( 'No', 'ava-woo-builder' ),
 				'return_value' => 'yes',
 				'default'      => 'yes',
+			),
+			'is_linked_image' => array(
+				'type'         => 'switcher',
+				'label'        => esc_html__( 'Add Link to Image', 'ava-woo-builder' ),
+				'label_on'     => esc_html__( 'Yes', 'ava-woo-builder' ),
+				'label_off'    => esc_html__( 'No', 'ava-woo-builder' ),
+				'return_value' => 'yes',
+				'default'      => 'no',
+				'condition'    => array(
+					'show_image' => array( 'yes' ),
+				),
 			),
 			'thumb_size'      => array(
 				'type'      => 'select',
@@ -264,7 +295,8 @@ class Ava_Woo_Products_List_Shortcode extends Ava_Woo_Builder_Shortcode_Base {
 	 * @return object
 	 */
 	public function query() {
-		$defaults = array(
+
+		$defaults = apply_filters( 'ava-woo-builder/shortcodes/ava-woo-products-list/query-args', array(
 			'post_status'   => 'publish',
 			'post_type'     => 'product',
 			'no_found_rows' => 1,
@@ -272,7 +304,48 @@ class Ava_Woo_Products_List_Shortcode extends Ava_Woo_Builder_Shortcode_Base {
 			'tax_query'     => array(
 				'relation' => 'AND',
 			),
-		);
+		), $this );
+
+		if ( 'yes' === $this->get_attr( 'use_current_query' ) ) {
+
+			if ( is_shop() || is_product_taxonomy() || is_product_category() || is_product_tag() ) {
+				global $wp_query;
+
+				$wp_query->set( 'ava_use_current_query', 'yes' );
+				$wp_query->set( 'posts_per_page', intval( $this->get_attr( 'number' ) ) );
+
+				$default_query = array(
+					'post_type'      => $wp_query->get( 'post_type' ),
+					'wc_query'       => $wp_query->get( 'wc_query' ),
+					'tax_query'      => $wp_query->get( 'tax_query' ),
+					'meta_query'     => $wp_query->get( 'meta_query' ),
+					'orderby'        => $wp_query->get( 'orderby' ),
+					'order'          => $wp_query->get( 'order' ),
+					'posts_per_page' => intval( $this->get_attr( 'number' ) ),
+					'paged'          => $wp_query->get( 'paged' )
+				);
+
+				if ( $wp_query->get( 'taxonomy' ) ) {
+					$default_query['taxonomy'] = $wp_query->get( 'taxonomy' );
+					$default_query['term']     = $wp_query->get( 'term' );
+				}
+
+				if ( is_search() ){
+					$default_query['s'] = $wp_query->get( 's' );
+				}
+
+				$query_args = wp_parse_args( $wp_query->query_vars, $defaults );
+
+				// Ensure ava-woo-builder/shortcodes/ava-woo-products/query-args hook correctly fires even for archive (For filters compat)
+				$defaults = apply_filters( 'ava-woo-builder/shortcodes/ava-woo-products-list/query-args', $query_args, $this );
+
+				$query_args = $this->get_wc_catalog_ordering_args( $query_args );
+
+				return new WP_Query( $query_args );
+
+			}
+
+		}
 
 		$query_type                   = $this->get_attr( 'products_query' );
 		$query_order                  = $this->get_attr( 'products_order' );
@@ -375,6 +448,9 @@ class Ava_Woo_Products_List_Shortcode extends Ava_Woo_Builder_Shortcode_Base {
 				$query_args['meta_key'] = '_wc_average_rating';
 				$query_args['orderby']  = 'meta_value_num';
 				break;
+			case 'current':
+				$query_args = $this->get_wc_catalog_ordering_args( $query_args );
+				break;
 			default :
 				$query_args['orderby'] = 'date';
 		}
@@ -399,6 +475,31 @@ class Ava_Woo_Products_List_Shortcode extends Ava_Woo_Builder_Shortcode_Base {
 		}
 
 		return false;
+
+	}
+
+	/**
+	 * Add WooCommerce catalog ordering args to current query
+	 *
+	 * @param $query_args
+	 *
+	 * @return array
+	 */
+	public function get_wc_catalog_ordering_args( $query_args ) {
+
+		if ( !isset( $query_args['orderby'] ) ){
+			$query_args['orderby'] = 'date';
+		}
+
+		// @codingStandardsIgnoreStart
+		$ordering_args                = WC()->query->get_catalog_ordering_args( $query_args['orderby'], $query_args['order'] );
+		$query_args['orderby']        = $ordering_args['orderby'];
+		$query_args['order']          = $ordering_args['order'];
+		if ( $ordering_args['meta_key'] ) {
+			$query_args['meta_key']       = $ordering_args['meta_key'];
+		}
+
+		return $query_args;
 
 	}
 
