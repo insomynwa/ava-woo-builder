@@ -19,9 +19,10 @@ if ( ! isset( $settings['rating_icon'] ) ) {
 	$settings['rating_icon'] = 'avawoo-front-icon-rating-1';
 }
 
-$rating = ava_woo_builder_template_functions()->get_product_custom_rating( $settings['rating_icon'] );
+$empty_single_rating = ( isset( $settings['show_single_empty_rating'] ) && 'true' === $settings['show_single_empty_rating'] ) ? true : false;
+$rating              = ava_woo_builder_template_functions()->get_product_custom_rating( $settings['rating_icon'], $empty_single_rating );
 
-if ( $rating_count > 0 ) : ?>
+if ( $rating_count > 0  || $empty_single_rating ) : ?>
 
 	<div class="woocommerce-product-rating">
 		<?php echo $rating; ?>

@@ -279,7 +279,7 @@ if ( ! class_exists( 'Ava_Woo_Builder_Tools' ) ) {
 		 */
 		public function get_carousel_arrow( $classes ) {
 
-			$format = apply_filters( 'ava_woo_builder/carousel/arrows_format', '<i class="%s ava-arrow"></i>', $classes );
+			$format = apply_filters( 'ava_woo_builder/carousel/arrows_format', '<div class="%s ava-arrow"></div>', $classes );
 
 			return sprintf( $format, implode( ' ', $classes ) );
 		}
@@ -323,7 +323,6 @@ if ( ! class_exists( 'Ava_Woo_Builder_Tools' ) ) {
 		 * @return [type] [description]
 		 */
 		public function get_available_prev_arrows_list() {
-
 			return apply_filters(
 				'ava_woo_builder/carousel/available_arrows/prev',
 				array(
@@ -338,15 +337,12 @@ if ( ! class_exists( 'Ava_Woo_Builder_Tools' ) ) {
 					'fa fa-caret-square-o-left' => __( 'Caret Square', 'ava-woo-builder' ),
 				)
 			);
-
 		}
-
 		/**
 		 * Return availbale arrows list
 		 * @return [type] [description]
 		 */
 		public function get_available_next_arrows_list() {
-
 			return apply_filters(
 				'ava_woo_builder/carousel/available_arrows/next',
 				array(
@@ -361,7 +357,6 @@ if ( ! class_exists( 'Ava_Woo_Builder_Tools' ) ) {
 					'fa fa-caret-square-o-right' => __( 'Caret Square', 'ava-woo-builder' ),
 				)
 			);
-
 		}
 
 		/**
@@ -407,55 +402,57 @@ if ( ! class_exists( 'Ava_Woo_Builder_Tools' ) ) {
 			}
 
 			$carousel_settings = array(
-				'columns'          => $settings['columns'],
-				'columns_tablet'   => $settings['columns_tablet'],
-				'columns_mobile'   => $settings['columns_mobile'],
-				'autoplay_speed'   => $settings['autoplay_speed'],
-				'autoplay'         => $settings['autoplay'],
-				'infinite'         => $settings['infinite'],
-				'pause_on_hover'   => $settings['pause_on_hover'],
-				'speed'            => $settings['speed'],
-				'arrows'           => $settings['arrows'],
-				'dots'             => $settings['dots'],
-				'slides_to_scroll' => $settings['slides_to_scroll'],
-				'prev_arrow'       => $settings['prev_arrow'],
-				'next_arrow'       => $settings['next_arrow'],
-				'effect'           => isset( $settings['effect'] ) ? $settings['effect'] : 'slide',
+				'carousel_direction'    => $settings['carousel_direction'],
+				'columns'               => $settings['columns'],
+				'columns_tablet'        => $settings['columns_tablet'],
+				'columns_mobile'        => $settings['columns_mobile'],
+				'autoplay_speed'        => $settings['autoplay_speed'],
+				'autoplay'              => $settings['autoplay'],
+				'infinite'              => $settings['infinite'],
+				'pause_on_interactions' => $settings['pause_on_interactions'],
+				'speed'                 => $settings['speed'],
+				'arrows'                => $settings['arrows'],
+				'prev_arrow'            => $this->prepare_arrow( $settings['prev_arrow'] ),
+				'next_arrow'            => $this->prepare_arrow( $settings['next_arrow'] ),
+				'dots'                  => $settings['dots'],
+				'slides_to_scroll'      => ( $settings['columns'] !== '1' ) ? $settings['slides_to_scroll'] : 1,
+				'effect'                => isset( $settings['effect'] ) ? $settings['effect'] : 'slide',
 			);
 
 			$options = apply_filters( 'ava-woo-builder/tools/carousel/pre-options', $carousel_settings, $settings );
 
 			$options = array(
-				'slidesToShow'   => array(
+				'direction'     => $carousel_settings['carousel_direction'],
+				'slidesToShow'  => array(
 					'desktop' => absint( $carousel_settings['columns'] ),
 					'tablet'  => absint( $carousel_settings['columns_tablet'] ),
 					'mobile'  => absint( $carousel_settings['columns_mobile'] ),
 				),
-				'autoplaySpeed'  => absint( $carousel_settings['autoplay_speed'] ),
-				'autoplay'       => filter_var( $carousel_settings['autoplay'], FILTER_VALIDATE_BOOLEAN ),
-				'infinite'       => filter_var( $carousel_settings['infinite'], FILTER_VALIDATE_BOOLEAN ),
-				'pauseOnHover'   => filter_var( $carousel_settings['pause_on_hover'], FILTER_VALIDATE_BOOLEAN ),
+				'slidesPerGroup' => absint( $carousel_settings['slides_to_scroll'] ),
+				'loop'           => filter_var( $carousel_settings['infinite'], FILTER_VALIDATE_BOOLEAN ),
 				'speed'          => absint( $carousel_settings['speed'] ),
-				'arrows'         => filter_var( $carousel_settings['arrows'], FILTER_VALIDATE_BOOLEAN ),
-				'dots'           => filter_var( $carousel_settings['dots'], FILTER_VALIDATE_BOOLEAN ),
-				'slidesToScroll' => absint( $carousel_settings['slides_to_scroll'] ),
-				'prevArrow'      => $this->get_carousel_arrow(
-					array( $carousel_settings['prev_arrow'], 'prev-arrow' )
-				),
-				'nextArrow'      => $this->get_carousel_arrow(
-					array( $carousel_settings['next_arrow'], 'next-arrow' )
-				),
 			);
 
-			if ( 1 === absint( $carousel_settings['columns'] ) ) {
-				$options['fade'] = ( 'fade' === $carousel_settings['effect'] );
+			if ( filter_var( $carousel_settings['autoplay'], FILTER_VALIDATE_BOOLEAN ) ) {
+				$options['autoplay'] = array(
+					'delay'                => isset( $carousel_settings['autoplay_speed'] ) ? absint( $carousel_settings['autoplay_speed'] ) : '5000',
+					'disableOnInteraction' => filter_var( $carousel_settings['pause_on_interactions'], FILTER_VALIDATE_BOOLEAN ),
+				);
 			}
 
-			$options = apply_filters( 'ava-woo-builder/tools/carousel/options', $options, $settings );
+			if ( 1 === absint( $carousel_settings['columns'] && 'fade' === $carousel_settings['effect'] ) ) {
+				$options['effect'] = $carousel_settings['effect'];
+			}
+
+			$options           = apply_filters( 'ava-woo-builder/tools/carousel/options', $options, $settings );
+			$pagination        = filter_var( $carousel_settings['dots'], FILTER_VALIDATE_BOOLEAN ) ? '<div class="swiper-pagination"></div>' : '';
+			$swiper_prev_arrow = filter_var( $carousel_settings['arrows'], FILTER_VALIDATE_BOOLEAN ) ? $this->get_carousel_arrow( array( $carousel_settings['prev_arrow'], 'prev-arrow', 'ava-swiper-button-prev' ) ) : '';
+			$swiper_next_arrow = filter_var( $carousel_settings['arrows'], FILTER_VALIDATE_BOOLEAN ) ? $this->get_carousel_arrow( array( $carousel_settings['next_arrow'], 'next-arrow', 'ava-swiper-button-next' ) ) : '';
+			$is_rtl            = is_rtl() ? 'rtl' : 'ltr';
 
 			return sprintf(
-				'<div class="ava-woo-carousel elementor-slick-slider" data-slider_options="%1$s" dir="ltr">%2$s</div>',
-				htmlspecialchars( json_encode( $options ) ), $content
+				'<div class="ava-woo-carousel swiper-container" data-slider_options="%1$s" dir="%6$s"> %2$s %3$s %4$s %5$s </div>',
+				htmlspecialchars( json_encode( $options ) ), $content, $pagination, $swiper_prev_arrow, $swiper_next_arrow, $is_rtl
 			);
 		}
 
@@ -512,6 +509,85 @@ if ( ! class_exists( 'Ava_Woo_Builder_Tools' ) ) {
 
 			return true;
 
+		}
+
+		/**
+		 * Return available HTML title tags list
+		 *
+		 * @return array
+		 */
+		public function get_available_title_html_tags() {
+			return array(
+				'h1'   => esc_html__( 'H1', 'ava-elements' ),
+				'h2'   => esc_html__( 'H2', 'ava-elements' ),
+				'h3'   => esc_html__( 'H3', 'ava-elements' ),
+				'h4'   => esc_html__( 'H4', 'ava-elements' ),
+				'h5'   => esc_html__( 'H5', 'ava-elements' ),
+				'h6'   => esc_html__( 'H6', 'ava-elements' ),
+				'div'  => esc_html__( 'div', 'ava-elements' ),
+				'span' => esc_html__( 'span', 'ava-elements' ),
+				'p'    => esc_html__( 'p', 'ava-elements' ),
+			);
+		}
+
+		/**
+		 * Is FA5 migration.
+		 *
+		 * @return bool
+		 */
+		public static function is_fa5_migration() {
+			if ( defined( 'ELEMENTOR_VERSION' )
+				&& version_compare( ELEMENTOR_VERSION, '2.6.0', '>=' )
+				&& Elementor\Icons_Manager::is_migration_allowed()
+			) {
+				return true;
+			}
+			return false;
+		}
+
+		/**
+		 * FA5 arrows map.
+		 *
+		 * @return array
+		 */
+		public static function get_fa5_arrows_map() {
+			return apply_filters(
+				'ava-search/fa5_arrows_map',
+				array(
+					'fa fa-angle-left'           => 'fas fa-angle-left',
+					'fa fa-chevron-left'         => 'fas fa-chevron-left',
+					'fa fa-angle-double-left'    => 'fas fa-angle-double-left',
+					'fa fa-arrow-left'           => 'fas fa-arrow-left',
+					'fa fa-caret-left'           => 'fas fa-caret-left',
+					'fa fa-long-arrow-left'      => 'fas fa-long-arrow-alt-left',
+					'fa fa-arrow-circle-left'    => 'fas fa-arrow-circle-left',
+					'fa fa-chevron-circle-left'  => 'fas fa-chevron-circle-left',
+					'fa fa-caret-square-o-left'  => 'fas fa-caret-square-left',
+					'fa fa-angle-right'          => 'fas fa-angle-right',
+					'fa fa-chevron-right'        => 'fas fa-chevron-right',
+					'fa fa-angle-double-right'   => 'fas fa-angle-double-right',
+					'fa fa-arrow-right'          => 'fas fa-arrow-right',
+					'fa fa-caret-right'          => 'fas fa-caret-right',
+					'fa fa-long-arrow-right'     => 'fas fa-long-arrow-alt-right',
+					'fa fa-arrow-circle-right'   => 'fas fa-arrow-circle-right',
+					'fa fa-chevron-circle-right' => 'fas fa-chevron-circle-right',
+					'fa fa-caret-square-o-right' => 'fas fa-caret-square-right',
+				)
+			);
+		}
+
+		/**
+		 * Prepare arrow
+		 *
+		 * @param  string $arrow
+		 * @return string
+		 */
+		public static function prepare_arrow( $arrow ) {
+			if ( ! self::is_fa5_migration() ) {
+				return $arrow;
+			}
+			$fa5_arrows_map = self::get_fa5_arrows_map();
+			return isset( $fa5_arrows_map[ $arrow ] ) ? $fa5_arrows_map[ $arrow ] : $arrow;
 		}
 
 		/**

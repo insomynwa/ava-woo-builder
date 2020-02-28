@@ -51,8 +51,6 @@ class Ava_Woo_Builder_Products_Navigation extends Ava_Woo_Builder_Base {
 	}
 
 	protected function _register_controls() {
-		$arrows_prev_list = array( '' => esc_html__( 'None', 'ava-woo-builder' ) ) + ava_woo_builder_tools()->get_available_prev_arrows_list();
-		$arrows_next_list = array( '' => esc_html__( 'None', 'ava-woo-builder' ) ) + ava_woo_builder_tools()->get_available_next_arrows_list();
 
 		$this->start_controls_section(
 			'section_general',
@@ -76,13 +74,18 @@ class Ava_Woo_Builder_Products_Navigation extends Ava_Woo_Builder_Base {
 				'default'     => esc_html__( 'Previous', 'ava-woo-builder' ),
 			)
 		);
-		$this->add_control(
+		$this->__add_advanced_icon_control(
 			'prev_icon',
 			array(
-				'type'    => Controls_Manager::SELECT,
-				'label'   => esc_html__( 'The previous page link icon', 'ava-woo-builder' ),
-				'default' => 'fa fa-angle-left',
-				'options' => $arrows_prev_list,
+				'label'       => esc_html__( 'The previous page link icon', 'ava-woo-builder' ),
+				'type'        => Controls_Manager::ICON,
+				'label_block' => true,
+				'file'        => '',
+				'default'     => 'fa fa-angle-left',
+				'fa5_default' => array(
+					'value'   => 'fas fa-angle-left',
+					'library' => 'fa-solid',
+				),
 			)
 		);
 		$this->add_control(
@@ -94,13 +97,18 @@ class Ava_Woo_Builder_Products_Navigation extends Ava_Woo_Builder_Base {
 				'default'     => esc_html__( 'Next', 'ava-woo-builder' ),
 			)
 		);
-		$this->add_control(
+		$this->__add_advanced_icon_control(
 			'next_icon',
 			array(
-				'type'    => Controls_Manager::SELECT,
-				'label'   => esc_html__( 'The next page link icon', 'ava-woo-builder' ),
-				'default' => 'fa fa-angle-right',
-				'options' => $arrows_next_list,
+				'label'       => esc_html__( 'The next page link icon', 'ava-woo-builder' ),
+				'type'        => Controls_Manager::ICON,
+				'label_block' => true,
+				'file'        => '',
+				'default'     => 'fa fa-angle-right',
+				'fa5_default' => array(
+					'value'   => 'fas fa-angle-right',
+					'library' => 'fa-solid',
+				),
 			)
 		);
 		$this->end_controls_section();
@@ -526,13 +534,17 @@ class Ava_Woo_Builder_Products_Navigation extends Ava_Woo_Builder_Base {
 		$settings  = $this->get_settings();
 		$prev_text = isset( $settings['prev_text'] ) ? $settings['prev_text'] : '';
 		$next_text = isset( $settings['next_text'] ) ? $settings['next_text'] : '';
+		$prev_icon  = $this->__render_icon( 'prev_icon', '%s', '', false );
+		$next_icon  = $this->__render_icon( 'next_icon', '%s', '', false );
 
-		if ( ! empty( $settings['prev_icon'] ) ) {
-			$prev_text = $this->get_navigation_arrow( $settings['prev_icon'], 'prev' ) . $prev_text;
+		if ( ! empty( $prev_icon ) ) {
+			$prev_text = $this->get_navigation_arrow( 'prev', $prev_icon ) . $prev_text;
 		}
-		if ( ! empty( $settings['next_icon'] ) ) {
-			$next_text = $next_text . $this->get_navigation_arrow( $settings['next_icon'], 'next' );
+		if ( ! empty( $next_icon ) ) {
+			$next_text .= $this->get_navigation_arrow( 'next', $next_icon );
 		}
+
+
 
 		$this->__open_wrap();
 		echo '<div class="ava-woo-builder-shop-navigation">';
@@ -550,14 +562,14 @@ class Ava_Woo_Builder_Products_Navigation extends Ava_Woo_Builder_Base {
 	 *
 	 * @return string
 	 */
-	public function get_navigation_arrow( $icon = '', $arrow = 'next' ) {
+	public function get_navigation_arrow( $arrow = 'next', $icon = '' ) {
 
 		$format = apply_filters(
 			'ava-woo-builder/shop-navigation/arrows-format',
-			'<i class="%1$s ava-arrow-%2$s ava-woo-builder-shop-navigation__arrow"></i>'
+			'<span class="ava-arrow-%s ava-woo-builder-shop-navigation__arrow ava-woo-builder-icon">%s</span>'
 		);
 
-		return sprintf( $format, $icon, $arrow );
+		return sprintf( $format, $arrow, $icon );
 
 	}
 }

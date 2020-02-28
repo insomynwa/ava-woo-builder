@@ -29,8 +29,8 @@ class Ava_Woo_Builder_Archive_Product_Rating extends Widget_Base {
 		return 'avawoobuilder-icon-8';
 	}
 
-	public function get_ava_help_url() {
-		return 'https://blockcroco.com/knowledge-base/articles/woocommerce-avawoobuilder-settings-how-to-create-and-set-a-custom-categories-archive-template/';
+	public function get_help_url() {
+		return 'https://blockcroco.com/knowledge-base/articles/woocommerce-avawoobuilder-settings-how-to-create-and-set-a-custom-categories-archive-template/?utm_source=need-help&utm_medium=ava-woo-categories&utm_campaign=avawoobuilder';
 	}
 
 	public function get_categories() {
@@ -57,6 +57,18 @@ class Ava_Woo_Builder_Archive_Product_Rating extends Widget_Base {
 				'label'      => esc_html__( 'Rating', 'ava-woo-builder' ),
 				'tab'        => Controls_Manager::TAB_STYLE,
 				'show_label' => false,
+			)
+		);
+
+		$this->add_control(
+			'show_empty_rating',
+			array(
+				'label'        => esc_html__( 'Show Rating if Empty', 'ava-woo-builder' ),
+				'type'         => Controls_Manager::SWITCHER,
+				'label_on'     => esc_html__( 'Yes', 'ava-woo-builder' ),
+				'label_off'    => esc_html__( 'No', 'ava-woo-builder' ),
+				'return_value' => 'true',
+				'default'      => '',
 			)
 		);
 
@@ -205,8 +217,8 @@ class Ava_Woo_Builder_Archive_Product_Rating extends Widget_Base {
 		if ( ! isset( $settings['archive_rating_icon'] ) ) {
 			$settings['archive_rating_icon'] = 'avawoo-front-icon-rating-1';
 		}
-
-		$rating = ava_woo_builder_template_functions()->get_product_custom_rating( $settings['archive_rating_icon'] );
+		$empty_rating = ( isset( $settings['show_empty_rating'] ) && 'true' === $settings['show_empty_rating'] ) ? true : false;
+		$rating = ava_woo_builder_template_functions()->get_product_custom_rating( $settings['archive_rating_icon'], $empty_rating );
 
 		if ( false !== $rating ) {
 			echo '<div class="ava-woo-builder-archive-product-rating">';
@@ -223,6 +235,7 @@ class Ava_Woo_Builder_Archive_Product_Rating extends Widget_Base {
 
 		$macros_settings = array(
 			'archive_rating_icon' => $settings['archive_rating_icon'],
+			'show_empty_rating'   => $settings['show_empty_rating'],
 		);
 
 		if ( ava_woo_builder_tools()->is_builder_content_save() ) {

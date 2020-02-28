@@ -73,6 +73,15 @@ class Ava_Woo_Builder_Single_Images extends Ava_Woo_Builder_Base {
 		);
 
 		$this->add_control(
+			'main_image_description',
+			array(
+				'raw'             => esc_html__( 'This controls works only with main gallery image.', 'ava-woo-builder' ),
+				'type'            => Controls_Manager::RAW_HTML,
+				'content_classes' => 'elementor-descriptor',
+			)
+		);
+
+		$this->add_control(
 			'main_image_background_color',
 			array(
 				'label' => esc_html__( 'Background Color', 'ava-woo-builder' ),

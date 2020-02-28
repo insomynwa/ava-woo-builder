@@ -84,15 +84,7 @@ class Ava_Woo_Builder_Single_Attributes extends Ava_Woo_Builder_Base {
 				'label'   => esc_html__( 'Title Tag', 'ava-woo-builder' ),
 				'type'    => Controls_Manager::SELECT,
 				'default' => 'h2',
-				'options' => array(
-					'h1'  => esc_html__( 'H1', 'ava-woo-builder' ),
-					'h2'  => esc_html__( 'H2', 'ava-woo-builder' ),
-					'h3'  => esc_html__( 'H3', 'ava-woo-builder' ),
-					'h4'  => esc_html__( 'H4', 'ava-woo-builder' ),
-					'h5'  => esc_html__( 'H5', 'ava-woo-builder' ),
-					'h6'  => esc_html__( 'H6', 'ava-woo-builder' ),
-					'div' => esc_html__( 'DIV', 'ava-woo-builder' ),
-				),
+				'options' => ava_woo_builder_tools()->get_available_title_html_tags(),
 			)
 		);
 

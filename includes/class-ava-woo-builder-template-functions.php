@@ -31,6 +31,10 @@ if ( ! class_exists( 'Ava_Woo_Builder_Template_Functions' ) ) {
 		public function get_product_sale_flash( $badge_text = '' ) {
 			global $product;
 
+			if ( ! is_a( $product, 'WC_Product' ) ) {
+				return;
+			}
+
 			if ( $product->is_on_sale() ) {
 				return sprintf( '<div class="ava-woo-product-badge ava-woo-product-badge__sale">%s</div>', $badge_text );
 			}
@@ -61,7 +65,12 @@ if ( ! class_exists( 'Ava_Woo_Builder_Template_Functions' ) ) {
 		public function get_product_thumbnail( $image_size = 'thumbnail_size', $use_thumb_effect = false, $attr = array() ) {
 			global $product;
 
+			if ( ! is_a( $product, 'WC_Product' ) ) {
+				return;
+			}
+
 			$thumbnail_id        = get_post_thumbnail_id( $product->get_id() );
+			$enable_thumb_effect = filter_var( ava_woo_builder_settings()->get( 'enable_product_thumb_effect' ), FILTER_VALIDATE_BOOLEAN );
 			$placeholder_src     = apply_filters( 'ava-woo-builder/template-functions/product-thumbnail-placeholder', Elementor\Utils::get_placeholder_image_src() );
 			$attr                = array( 'data-no-lazy' => '1' );
 
@@ -165,6 +174,10 @@ if ( ! class_exists( 'Ava_Woo_Builder_Template_Functions' ) ) {
 		public function get_product_title() {
 			global $product;
 
+			if ( ! is_a( $product, 'WC_Product' ) ) {
+				return;
+			}
+
 			return get_the_title( $product->get_id() );
 		}
 
@@ -204,8 +217,12 @@ if ( ! class_exists( 'Ava_Woo_Builder_Template_Functions' ) ) {
 
 		}
 
-		public function get_product_custom_rating( $icon = 'fa fa-star' ) {
+		public function get_product_custom_rating( $icon = 'fa fa-star', $show_empty_rating ) {
 			global $product;
+
+			if ( ! is_a( $product, 'WC_Product' ) ) {
+				return;
+			}
 
 			if ( get_option( 'woocommerce_enable_review_rating' ) === 'no' ) {
 				return false;
@@ -213,7 +230,7 @@ if ( ! class_exists( 'Ava_Woo_Builder_Template_Functions' ) ) {
 
 			$rating = $product->get_average_rating();
 
-			if ( $rating > 0 ){
+			if ( $rating > 0 || $show_empty_rating ){
 				$html   = '<span class="product-rating__content">';
 
 				for ( $i = 1; $i <= 5; $i ++ ) {
@@ -237,6 +254,10 @@ if ( ! class_exists( 'Ava_Woo_Builder_Template_Functions' ) ) {
 		 */
 		public function get_product_price() {
 			global $product;
+
+			if ( ! is_a( $product, 'WC_Product' ) ) {
+				return;
+			}
 
 			$price_html = $product->get_price_html();
 
@@ -303,6 +324,10 @@ if ( ! class_exists( 'Ava_Woo_Builder_Template_Functions' ) ) {
 		 */
 		public function get_product_categories_list() {
 			global $product;
+
+			if ( ! is_a( $product, 'WC_Product' ) ) {
+				return;
+			}
 
 			$separator = '<span class="separator">&#44;&nbsp;</span></li><li>';
 			$before    = '<ul><li>';

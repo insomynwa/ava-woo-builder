@@ -72,9 +72,10 @@ class Ava_Woo_Builder_Single_Sale_Badge extends Ava_Woo_Builder_Base {
 		$this->add_control(
 			'single_badge_text',
 			array(
-				'type'      => 'text',
-				'label'     => esc_html__( 'Sale Badge Text', 'ava-woo-builder' ),
-				'default'   => 'Sale!',
+				'type'        => 'text',
+				'label'       => esc_html__( 'Sale Badge Text', 'ava-woo-builder' ),
+				'default'     => 'Sale!',
+				'description' => esc_html__( 'Use %percentage_sale% and %numeric_sale% macros to display a withdrawal of discounts as a percentage or numeric of the initial price.', 'ava-woo-builder' ),
 			)
 		);
 

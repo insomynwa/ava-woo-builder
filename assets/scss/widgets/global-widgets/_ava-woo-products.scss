@@ -249,14 +249,6 @@
 	}
 	
 	&.ava-equal-cols {
-		.slick-track {
-			display: flex;
-			align-items: stretch;
-			.ava-woo-products__item {
-				flex: 0 0 auto;
-			}
-		}
-		
 		.ava-woo-products__item {
 			height: auto;
 			display: flex;
@@ -307,7 +299,8 @@
 				.ava-woo-product-price,
 				.ava-woo-product-title,
 				.ava-woo-product-sku,
-				.ava-woo-product-categories {
+				.ava-woo-product-categories,
+				.ava-woo-product-stock-status {
 					transform: translateY(0);
 					opacity: 1;
 				}
@@ -317,6 +310,11 @@
 				}
 
 				.ava-woo-product-sku {
+					transition: .2s all ease;
+					transition-delay: .06s;
+				}
+				
+				.ava-woo-product-stock-status {
 					transition: .2s all ease;
 					transition-delay: .06s;
 				}
@@ -364,7 +362,8 @@
 					.ava-woo-product-tags,
 					.ava-woo-product-rating,
 					.ava-woo-product-excerpt,
-					.ava-woo-product-categories {
+					.ava-woo-product-categories,
+					.ava-woo-product-stock-status {
 						transform: translateY(-20px);
 						opacity: 0;
 						visibility: hidden;

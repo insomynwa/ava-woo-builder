@@ -91,3 +91,15 @@
 		}
 	}
 }
+
+.ava-woo-builder-icon {
+	display: inline-block;
+	line-height: 1;
+	
+	svg {
+		display: block;
+		width: 1em;
+		height: 1em;
+		fill: currentColor;
+	}
+}

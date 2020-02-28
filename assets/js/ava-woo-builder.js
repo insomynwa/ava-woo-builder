@@ -120,7 +120,7 @@
 				return;
 			}
 
-			AvaWooBuilder.initCarousel( $target.find( '.ava-woo-products' ), $target.data( 'slider_options' ) );
+			AvaWooBuilder.initCarousel( $target, $target.data( 'slider_options' ) );
 
 		},
 
@@ -132,7 +132,7 @@
 				return;
 			}
 
-			AvaWooBuilder.initCarousel( $target.find( '.ava-woo-categories' ), $target.data( 'slider_options' ) );
+			AvaWooBuilder.initCarousel( $target, $target.data( 'slider_options' ) );
 
 		},
 
@@ -142,47 +142,59 @@
 
 		initCarousel: function( $target, options ) {
 
-			var tabletSlides, mobileSlides, defaultOptions, slickOptions;
-
-			if ( options.slidesToShow.tablet ) {
-				tabletSlides = options.slidesToShow.tablet;
-			} else {
-				tabletSlides = 1 === options.slidesToShow.desktop ? 1 : 2;
-			}
-
+			var mobileSlides, tabletSlides, desktopSlides, defaultOptions, visibleSlides,
+				$slidesCount = $target.find('.swiper-slide').length;
+			
 			if ( options.slidesToShow.mobile ) {
 				mobileSlides = options.slidesToShow.mobile;
 			} else {
 				mobileSlides = 1;
 			}
 
-			options.slidesToShow = options.slidesToShow.desktop;
+			if ( options.slidesToShow.tablet ) {
+				tabletSlides = options.slidesToShow.tablet;
+			} else {
+				tabletSlides = 1 === options.slidesToShow.desktop ? 1 : 2;
+			}
+			
+			desktopSlides = options.slidesToShow.desktop;
+		
+			if( $( window ).width() < 768 ) {
+				visibleSlides = mobileSlides;
+			} else if ( $( window ).width() < 1025 ) {
+				visibleSlides = tabletSlides;
+			} else {
+				visibleSlides = desktopSlides;
+			}
 
 			defaultOptions = {
-				customPaging: function(slider, i) {
-					return $( '<span />' ).text( i + 1 );
-				},
-				dotsClass: 'ava-slick-dots',
-				responsive: [
-					{
-						breakpoint: 1025,
-						settings: {
-							slidesToShow: tabletSlides,
-						}
+				slidesPerView: desktopSlides,
+				breakpoints: {
+					768: {
+						slidesPerView: mobileSlides,
+						slidesPerGroup: 1,
 					},
-					{
-						breakpoint: 768,
-						settings: {
-							slidesToShow: mobileSlides,
-							slidesToScroll: 1
-						}
-					}
-				]
+					1025: {
+						slidesPerView: tabletSlides,
+						slidesPerGroup: 1,
+					},
+				},
+				pagination: {
+					el: '.swiper-pagination',
+					clickable: true,
+				},
+				navigation: {
+					nextEl: '.ava-swiper-button-next',
+					prevEl: '.ava-swiper-button-prev',
+				},
 			};
-
-			slickOptions = $.extend( {}, defaultOptions, options );
-
-			$target.slick( slickOptions );
+			
+			if ( $slidesCount > visibleSlides ) {
+				new Swiper($target, $.extend( {}, defaultOptions, options ) );
+				$target.find( '.ava-arrow' ).show();
+			} else {
+				$target.find( '.ava-arrow' ).hide();
+			}
 		},
 		
 		avaCartPopupOpen: function ( event ) {

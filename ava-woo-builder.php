@@ -3,7 +3,7 @@
  * Plugin Name: Avator Woo Builder
  * Description: Elementor WooCommerce add-on plugin
  * Author: Mr.Lorem
- * Version: 1.4.3
+ * Version: 1.6.1
  *
  * Text Domain: ava-menu
  * Domain Path: /languages
@@ -32,6 +32,13 @@ if ( ! class_exists( 'Ava_Woo_Builder' ) ) {
 		private static $instance = null;
 
 		/**
+		 * Plugin version
+		 *
+		 * @var string
+		 */
+		private $version = '1.6.1';
+
+		/**
 		 * Holder for base plugin URL
 		 *
 		 * @since  1.0.0
@@ -39,21 +46,6 @@ if ( ! class_exists( 'Ava_Woo_Builder' ) ) {
 		 * @var    string
 		 */
 		private $plugin_url = null;
-
-		/**
-		 * Plugin version
-		 *
-		 * @var string
-		 */
-		private $version = '1.4.3';
-
-		/**
-		 * Plugin properties
-		 */
-		public $framework;
-		public $documents;
-		public $parser;
-		public $macros;
 
 		/**
 		 * Holder for base plugin path
@@ -65,6 +57,29 @@ if ( ! class_exists( 'Ava_Woo_Builder' ) ) {
 		private $plugin_path = null;
 
 		/**
+		 * Plugin properties
+		 */
+		public $module_loader;
+
+		/**
+		 * [$documents description]
+		 * @var [type]
+		 */
+		public $documents;
+
+		/**
+		 * [$parser description]
+		 * @var [type]
+		 */
+		public $parser;
+
+		/**
+		 * [$macros description]
+		 * @var [type]
+		 */
+		public $macros;
+
+		/**
 		 * Sets up needed actions/filters for the plugin to initialize.
 		 *
 		 * @since 1.0.0
@@ -74,12 +89,16 @@ if ( ! class_exists( 'Ava_Woo_Builder' ) ) {
 		public function __construct() {
 
 			// Load the core functions/classes required by the rest of the plugin.
-			add_action( 'after_setup_theme', array( $this, 'load_framework' ), - 20 );
+			add_action( 'after_setup_theme', array( $this, 'module_loader' ), - 20 );
 
 			// Internationalize the text strings used.
 			add_action( 'init', array( $this, 'lang' ), - 999 );
+
 			// Load files.
 			add_action( 'init', array( $this, 'init' ), - 999 );
+
+			// Ava Dashboard Init
+			add_action( 'init', array( $this, 'ava_dashboard_init' ), -999 );
 
 			// Register activation and deactivation hook.
 			register_activation_hook( __FILE__, array( $this, 'activation' ) );
@@ -89,18 +108,19 @@ if ( ! class_exists( 'Ava_Woo_Builder' ) ) {
 		/**
 		 * Load plugin framework
 		 */
-		public function load_framework() {
+		public function module_loader() {
 
-			require $this->plugin_path( 'framework/loader.php' );
+			require $this->plugin_path( 'includes/modules/loader.php' );
 
-			$this->framework = new Ava_Woo_Builder_CX_Loader(
+			$this->module_loader = new Ava_Woo_Builder_CX_Loader(
 				array(
-					$this->plugin_path( 'framework/interface-builder/cherry-x-interface-builder.php' ),
-					$this->plugin_path( 'framework/post-meta/cherry-x-post-meta.php' ),
-					$this->plugin_path( 'framework/db-updater/cherry-x-db-updater.php' )
+					$this->plugin_path( 'includes/modules/interface-builder/cherry-x-interface-builder.php' ),
+					$this->plugin_path( 'includes/modules/post-meta/cherry-x-post-meta.php' ),
+					$this->plugin_path( 'includes/modules/db-updater/cherry-x-db-updater.php' ),
+					$this->plugin_path( 'includes/modules/vue-ui/cherry-x-vue-ui.php' ),
+					$this->plugin_path( 'includes/modules/ava-dashboard/ava-dashboard.php' ),
 				)
 			);
-
 		}
 
 		/**
@@ -124,6 +144,7 @@ if ( ! class_exists( 'Ava_Woo_Builder' ) ) {
 				add_action( 'admin_notices', array( $this, 'admin_notice_missing_main_plugin' ) );
 				return;
 			}
+
 			add_action( 'plugins_loaded', array( $this, 'woocommerce_loaded' ) );
 
 			if ( class_exists( 'WooCommerce' ) ) {
@@ -145,38 +166,52 @@ if ( ! class_exists( 'Ava_Woo_Builder' ) ) {
 				$this->macros    = new Ava_Woo_Builder_Macros();
 
 				if ( is_admin() ) {
+
 					// Init DB upgrader
 					require $this->plugin_path( 'includes/class-ava-woo-builder-db-upgrader.php' );
-					ava_woo_builder_db_upgrader()->init();
 
+					ava_woo_builder_db_upgrader()->init();
 				}
+
+				//Init Rest Api
+				new \Ava_Woo_Builder\Rest_Api();
+
 			}
+		}
+
+		/**
+		 * [ava_dashboard_init description]
+		 * @return [type] [description]
+		 */
+		public function ava_dashboard_init() {
 
 			if ( is_admin() ) {
 
-				require $this->plugin_path( 'includes/updater/class-ava-woo-builder-plugin-update.php' );
+				$ava_dashboard_module_data = $this->module_loader->get_included_module_data( 'ava-dashboard.php' );
 
-				ava_woo_builder_updater()->init( array(
+				$ava_dashboard = \Ava_Dashboard\Dashboard::get_instance();
+
+				$ava_dashboard->init( array(
+					'path'           => $ava_dashboard_module_data['path'],
+					'url'            => $ava_dashboard_module_data['url'],
+					'cx_ui_instance' => array( $this, 'ava_dashboard_ui_instance_init' ),
+					'plugin_data'    => array(
+						'slug'    => 'ava-woo-builder',
+						'file'    => 'ava-woo-builder/ava-woo-builder.php',
 					'version' => $this->get_version(),
-					'slug'    => 'ava-woo-builder',
-				) );
-
-				// Init plugin changelog
-				require $this->plugin_path( 'includes/updater/class-ava-woo-builder-plugin-changelog.php' );
-
-				ava_woo_builder_plugin_changelog()->init( array(
-					'name'     => 'AvaWooBuilder For Elementor',
-					'slug'     => 'ava-woo-builder',
-					'version'  => $this->get_version(),
-					'author'   => '<a href="https://mezem.io/mezemava/">Mezem</a>',
-					'homepage' => 'https://blockcroco.com/plugins/avawoobuilder/',
-					'banners'  => array(
-						'high' => $this->plugin_url( 'assets/images/banner.png' ),
-						'low'  => $this->plugin_url( 'assets/images/banner.png' ),
 					),
 				) );
-
 			}
+		}
+
+		/**
+		 * [ava_dashboard_ui_instance_init description]
+		 * @return [type] [description]
+		 */
+		public function ava_dashboard_ui_instance_init() {
+			$cx_ui_module_data = $this->module_loader->get_included_module_data( 'cherry-x-vue-ui.php' );
+
+			return new CX_Vue_UI( $cx_ui_module_data );
 
 		}
 
@@ -184,8 +219,10 @@ if ( ! class_exists( 'Ava_Woo_Builder' ) ) {
 		 * Check that WooCommerce active
 		 */
 		function woocommerce_loaded() {
+
 			if ( ! class_exists( 'WooCommerce' ) ) {
 				add_action( 'admin_notices', [ $this, 'admin_notice_missing_woocommerce_plugin' ] );
+
 				return;
 			}
 		}
@@ -195,9 +232,11 @@ if ( ! class_exists( 'Ava_Woo_Builder' ) ) {
 		 * @return [type] [description]
 		 */
 		public function admin_notice_missing_main_plugin() {
+
 			if ( isset( $_GET['activate'] ) ) {
 				unset( $_GET['activate'] );
 			}
+
 			$elementor_link = sprintf(
 				'<a href="%1$s">%2$s</a>',
 				admin_url() . 'plugin-install.php?s=elementor&tab=search&type=term',
@@ -209,6 +248,7 @@ if ( ! class_exists( 'Ava_Woo_Builder' ) ) {
 				$elementor_link
 			);
 			printf( '<div class="notice notice-warning is-dismissible"><p>%1$s</p></div>', $message );
+
 			if ( ! class_exists( 'WooCommerce' ) ) {
 				$woocommerce_link = sprintf(
 					'<a href="%1$s">%2$s</a>',
@@ -228,9 +268,11 @@ if ( ! class_exists( 'Ava_Woo_Builder' ) ) {
 		 * @return [type] [description]
 		 */
 		public function admin_notice_missing_woocommerce_plugin() {
+
 			if ( isset( $_GET['activate'] ) ) {
 				unset( $_GET['activate'] );
 			}
+
 			$woocommerce_link = sprintf(
 				'<a href="%1$s">%2$s</a>',
 				admin_url() . 'plugin-install.php?s=woocommerce&tab=search&type=term',
@@ -287,6 +329,10 @@ if ( ! class_exists( 'Ava_Woo_Builder' ) ) {
 			require $this->plugin_path( 'includes/settings/class-ava-woo-builder-shop-settings.php' );
 
 			require $this->plugin_path( 'includes/lib/compatibility/class-ava-woo-builder-compatibility.php' );
+
+			require $this->plugin_path( 'includes/rest-api/rest-api.php' );
+			require $this->plugin_path( 'includes/rest-api/endpoints/base.php' );
+			require $this->plugin_path( 'includes/rest-api/endpoints/plugin-settings.php' );
 		}
 
 		/**
@@ -369,12 +415,15 @@ if ( ! class_exists( 'Ava_Woo_Builder' ) ) {
 		 * @return bool
 		 */
 		public static function wc_version_check( $version = '3.6' ) {
+
 			if ( class_exists( 'WooCommerce' ) ) {
 				global $woocommerce;
+
 				if ( version_compare( $woocommerce->version, $version, ">=" ) ) {
 					return true;
 				}
 			}
+
 			return false;
 		}
 
@@ -384,8 +433,7 @@ if ( ! class_exists( 'Ava_Woo_Builder' ) ) {
 		 * @since  1.0.0
 		 * @return void
 		 */
-		public function activation() {
-		}
+		public function activation() {}
 
 		/**
 		 * Do some stuff on plugin activation
@@ -393,8 +441,7 @@ if ( ! class_exists( 'Ava_Woo_Builder' ) ) {
 		 * @since  1.0.0
 		 * @return void
 		 */
-		public function deactivation() {
-		}
+		public function deactivation() {}
 
 		/**
 		 * Returns the instance.
@@ -404,6 +451,7 @@ if ( ! class_exists( 'Ava_Woo_Builder' ) ) {
 		 * @return object
 		 */
 		public static function get_instance() {
+
 			// If the single instance hasn't been set, set it now.
 			if ( null == self::$instance ) {
 				self::$instance = new self;

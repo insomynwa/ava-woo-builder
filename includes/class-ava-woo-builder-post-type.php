@@ -497,6 +497,7 @@ if ( ! class_exists( 'Ava_Woo_Builder_Post_Type' ) ) {
 		 * @return void
 		 */
 		public function register_post_type() {
+
 			$labels = array(
 				'name'          => esc_html__( 'Ava Woo Templates', 'ava-woo-builder' ),
 				'singular_name' => esc_html__( 'Ava Woo Template', 'ava-woo-builder' ),
@@ -558,7 +559,6 @@ if ( ! class_exists( 'Ava_Woo_Builder_Post_Type' ) ) {
 					),
 				),
 			) );
-
 		}
 
 		/**
@@ -594,7 +594,7 @@ if ( ! class_exists( 'Ava_Woo_Builder_Post_Type' ) ) {
 		 */
 		public function get_builder() {
 
-			$builder_data = ava_woo_builder()->framework->get_included_module_data( 'cherry-x-interface-builder.php' );
+			$builder_data = ava_woo_builder()->module_loader->get_included_module_data( 'cherry-x-interface-builder.php' );
 
 			return new CX_Interface_Builder(
 				array(

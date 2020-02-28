@@ -184,6 +184,15 @@ class Ava_Woo_Categories_Shortcode extends Ava_Woo_Builder_Shortcode_Base {
 				'return_value' => 'yes',
 				'default'      => 'yes',
 			),
+			'title_html_tag'         => array(
+				'type'      => 'select',
+				'label'     => esc_html__( 'Title HTML Tag', 'ava-woo-builder' ),
+				'default'   => 'h5',
+				'options'   => ava_woo_builder_tools()->get_available_title_html_tags(),
+				'condition' => array(
+					'show_title' => array( 'yes' ),
+				),
+			),
 			'show_count'         => array(
 				'type'         => 'switcher',
 				'label'        => esc_html__( 'Show Products Count', 'ava-woo-builder' ),

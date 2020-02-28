@@ -2,10 +2,6 @@
 	
 	&-wrap {
 		&.ava-equal-cols {
-			.slick-track {
-				display: flex;
-				align-items: stretch;
-			}
 			.ava-carousel__item {
 				float: none;
 				height: auto;
@@ -53,28 +49,34 @@
 			right: 0;
 		}
 	}
-	.ava-slick-dots {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		position: relative;
-		z-index: 99;
-		li {
-			padding: 5px;
-			margin: 0;
-			list-style: none;
-			span {
-				transition: all 200ms linear;
-				display: block;
-				cursor: pointer;
-				width: 10px;
-				height: 10px;
-				border-radius: 5px;
-				padding: 0;
-				text-indent: -10em;
-				overflow: hidden;
-				&:before {
-					display: none;
+	
+	&.swiper-container {
+		width: 100%;
+		height: 100%;
+		
+		.swiper-pagination-bullet {
+			opacity: 1;
+			background-color: #a4afb7;
+			
+			&-active {
+				background-color: #000000;
+			}
+		}
+		
+		&-vertical {
+			.ava-arrow {
+				left: 50%;
+				right: auto;
+				transform: rotate(90deg);
+				
+				&.prev-arrow {
+					top: 15px;
+					bottom: auto;
+				}
+				
+				&.next-arrow {
+					bottom: 15px;
+					top: auto;
 				}
 			}
 		}

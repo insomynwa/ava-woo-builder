@@ -1199,6 +1199,8 @@ class Ava_Woo_Builder_Single_Add_To_Cart extends Ava_Woo_Builder_Base {
 
 		$this->__context = 'render';
 
+		$settings = apply_filters( 'ava-woo-builder/ava-woo-single-add-to-cart/settings', $this->get_settings(), $this );
+
 		if ( true === $this->__set_editor_product() ) {
 			$this->__open_wrap();
 			include $this->__get_global_template( 'index' );

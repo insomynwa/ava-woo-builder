@@ -23,7 +23,8 @@ do_action( 'ava-woo-builder/woocommerce/before-main-content' );
 
 $wc_data = new WC_Structured_Data;
 $wc_data->generate_product_data();
-$template = apply_filters( 'ava-woo-builder/current-template/template-id', ava_woo_builder_integration_woocommerce()->get_custom_shop_template() );
+$taxonomy_custom_template = get_term_meta( get_queried_object_id(), 'ava_woo_builder_template', true );
+$template = ( is_product_taxonomy() && ! empty( $taxonomy_custom_template ) ) ? apply_filters( 'ava-woo-builder/current-template/template-id', ava_woo_builder_integration_woocommerce()->get_custom_taxonomy_template() ) : apply_filters( 'ava-woo-builder/current-template/template-id', ava_woo_builder_integration_woocommerce()->get_custom_shop_template() );
 
 if ( class_exists( 'Elementor\Plugin' ) ) {
 	$elementor = Elementor\Plugin::instance();

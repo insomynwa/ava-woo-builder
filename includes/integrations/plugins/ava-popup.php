@@ -44,6 +44,26 @@ if ( ! class_exists( 'Ava_Woo_Builder_Popup_Package' ) ) {
 			add_action( 'elementor/element/ava-woo-products-list/section_general/before_section_end', array( $this, 'register_quickview_button_show_control' ) , 10, 2 );
 			add_action( 'ava-woo-builder/templates/ava-woo-products-list/quickview-button', array( $this, 'get_quickview_button_content' ) );
 
+			// Add Quick View buttons new icon settings
+			add_filter( 'ava-woo-builder/ava-woo-products-grid/settings', array( $this, 'quick_view_button_icon' ), 10, 2 );
+			add_filter( 'ava-woo-builder/ava-woo-products-list/settings', array( $this, 'quick_view_button_icon' ), 10, 2 );
+
+		}
+
+		/**
+		 * Add Quick View buttons new icon settings.
+		 *
+		 * @param $settings
+		 * @param $widget
+		 * @return mixed
+		 */
+		public function quick_view_button_icon( $settings, $widget ) {
+
+			if ( isset( $settings['selected_quickview_button_icon_normal'] ) || isset( $settings['quickview_button_icon_normal'] ) ) {
+				$settings['selected_quickview_button_icon_normal'] = htmlspecialchars( $widget->__render_icon('quickview_button_icon_normal', '%s', '', false ) );
+			}
+
+			return $settings;
 		}
 
 
@@ -191,7 +211,6 @@ if ( ! class_exists( 'Ava_Woo_Builder_Popup_Package' ) ) {
 			}
 			
 			return printf( 'data-cart-popup-enable=%1s data-cart-popup-id=%2s', json_encode( $popup_enable ), $popup_id );
-
 		}
 
 		/**
@@ -273,7 +292,7 @@ if ( ! class_exists( 'Ava_Woo_Builder_Popup_Package' ) ) {
 				<div class="ava-quickview-button__state ava-quickview-button__state-normal">
 					<?php
 					if ( filter_var( $display_settings['quickview_use_button_icon'], FILTER_VALIDATE_BOOLEAN ) ) {
-						printf( '<span class="ava-quickview-button__icon"><i class="%s"></i></span>', $display_settings['quickview_button_icon_normal'] );
+						printf( '<span class="ava-quickview-button__icon ava-woo-builder-icon">%s</span>', htmlspecialchars_decode( $display_settings['selected_quickview_button_icon_normal'] ) );
 					}
 					printf( '<span class="ava-quickview-button__label">%s</span>', $display_settings['quickview_button_label_normal'] );
 					?>
@@ -298,7 +317,7 @@ if ( ! class_exists( 'Ava_Woo_Builder_Popup_Package' ) ) {
 				)
 			);
 
-			$obj->add_control(
+			$obj->__add_advanced_icon_control(
 				'quickview_button_icon_normal',
 				array(
 					'label'       => esc_html__( 'Button Icon', 'ava-woo-builder' ),
@@ -306,6 +325,10 @@ if ( ! class_exists( 'Ava_Woo_Builder_Popup_Package' ) ) {
 					'label_block' => true,
 					'file'        => '',
 					'default'     => 'fa fa-eye',
+					'fa5_default' => array(
+						'value'   => 'fas fa-eye',
+						'library' => 'fa-solid',
+					),
 				)
 			);
 
@@ -673,7 +696,7 @@ if ( ! class_exists( 'Ava_Woo_Builder_Popup_Package' ) ) {
 						),
 					),
 					'selectors'  => array(
-						'{{WRAPPER}} ' . $css_scheme['icon_normal'] . ' i' => 'font-size: {{SIZE}}{{UNIT}}',
+						'{{WRAPPER}} ' . $css_scheme['icon_normal'] => 'font-size: {{SIZE}}{{UNIT}}',
 					),
 				)
 			);

@@ -67,6 +67,16 @@ class Ava_Woo_Builder_Archive_Product_Title extends Widget_Base {
 			)
 		);
 
+		$this->add_control(
+			'title_html_tag',
+			array(
+				'label'     => esc_html__( 'Title HTML Tag', 'ava-cw' ),
+				'type'      => Controls_Manager::SELECT,
+				'default'   => 'h5',
+				'options'   => ava_woo_builder_tools()->get_available_title_html_tags(),
+			)
+		);
+
 		$this->end_controls_section();
 
 		$this->start_controls_section(
@@ -121,7 +131,7 @@ class Ava_Woo_Builder_Archive_Product_Title extends Widget_Base {
 				'label'     => esc_html__( 'Color', 'ava-woo-builder' ),
 				'type'      => Controls_Manager::COLOR,
 				'selectors' => array(
-					'{{WRAPPER}} ' . $css_scheme['title'] . ':hover' => ' color: {{VALUE}}',
+					'{{WRAPPER}} ' . $css_scheme['title'] . ':hover a' => ' color: {{VALUE}}',
 				),
 			)
 		);
@@ -180,11 +190,11 @@ class Ava_Woo_Builder_Archive_Product_Title extends Widget_Base {
 			$close_link = '</a>';
 		}
 
+		echo '<' . $settings['title_html_tag'] . ' class="ava-woo-builder-archive-product-title">';
 		echo $open_link;
-		echo '<div class="ava-woo-builder-archive-product-title">';
 		echo ava_woo_builder_template_functions()->get_product_title();
-		echo '</div>';
 		echo $close_link;
+		echo '</' . $settings['title_html_tag'] . '>';
 
 	}
 
@@ -193,7 +203,8 @@ class Ava_Woo_Builder_Archive_Product_Title extends Widget_Base {
 		$settings = $this->get_settings();
 
 		$macros_settings = array(
-			'is_linked' => $settings['is_linked'],
+			'is_linked'      => $settings['is_linked'],
+			'title_html_tag' => $settings['title_html_tag'],
 		);
 
 		if ( ava_woo_builder_tools()->is_builder_content_save() ) {

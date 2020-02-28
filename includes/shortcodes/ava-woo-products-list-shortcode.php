@@ -70,25 +70,27 @@ class Ava_Woo_Products_List_Shortcode extends Ava_Woo_Builder_Shortcode_Base {
 				),
 			),
 			'products_cat'    => array(
-				'type'      => 'select2',
-				'label'     => esc_html__( 'Category', 'ava-woo-builder' ),
-				'default'   => '',
-				'multiple'  => true,
-				'options'   => $this->get_product_categories(),
-				'condition' => array(
+				'type'        => 'select2',
+				'label'       => esc_html__( 'Category', 'ava-woo-builder' ),
+				'default'     => '',
+				'multiple'    => true,
+				'label_block' => true,
+				'options'     => $this->get_product_categories(),
+				'condition'   => array(
 					'products_query'     => array( 'category' ),
-					'use_current_query!' => 'yes'
+					'use_current_query!' => 'yes',
 				),
 			),
 			'products_tag'    => array(
-				'type'      => 'select2',
-				'label'     => esc_html__( 'Tag', 'ava-woo-builder' ),
-				'default'   => '',
-				'multiple'  => true,
-				'options'   => $this->get_product_tags(),
-				'condition' => array(
+				'type'        => 'select2',
+				'label'       => esc_html__( 'Tag', 'ava-woo-builder' ),
+				'default'     => '',
+				'multiple'    => true,
+				'label_block' => true,
+				'options'     => $this->get_product_tags(),
+				'condition'   => array(
 					'products_query'     => array( 'tag' ),
-					'use_current_query!' => 'yes'
+					'use_current_query!' => 'yes',
 				),
 			),
 			'products_order'  => array(
@@ -96,12 +98,13 @@ class Ava_Woo_Products_List_Shortcode extends Ava_Woo_Builder_Shortcode_Base {
 				'label'   => esc_html__( 'Order by', 'ava-woo-builder' ),
 				'default' => 'default',
 				'options' => array(
-					'default'   => esc_html__( 'Date', 'ava-woo-builder' ),
-					'price'     => esc_html__( 'Price', 'ava-woo-builder' ),
-					'rand'      => esc_html__( 'Random', 'ava-woo-builder' ),
-					'sales'     => esc_html__( 'Sales', 'ava-woo-builder' ),
-					'rated'     => esc_html__( 'Top Rated', 'ava-woo-builder' ),
-					'current'   => esc_html__( 'Current', 'ava-woo-builder' ),
+					'default'    => esc_html__( 'Date', 'ava-woo-builder' ),
+					'price'      => esc_html__( 'Price', 'ava-woo-builder' ),
+					'rand'       => esc_html__( 'Random', 'ava-woo-builder' ),
+					'sales'      => esc_html__( 'Sales', 'ava-woo-builder' ),
+					'rated'      => esc_html__( 'Top Rated', 'ava-woo-builder' ),
+					'menu_order' => esc_html__( 'Menu Order', 'ava-woo-builder' ),
+					'current'    => esc_html__( 'Current', 'ava-woo-builder' ),
 				),
 				'condition' => array(
 					'use_current_query!' => 'yes'
@@ -115,6 +118,15 @@ class Ava_Woo_Products_List_Shortcode extends Ava_Woo_Builder_Shortcode_Base {
 				'return_value' => 'yes',
 				'default'      => 'yes',
 				'separator'    => 'before'
+			),
+			'title_html_tag'         => array(
+				'type'      => 'select',
+				'label'     => esc_html__( 'Title HTML Tag', 'ava-woo-builder' ),
+				'default'   => 'h5',
+				'options'   => ava_woo_builder_tools()->get_available_title_html_tags(),
+				'condition' => array(
+					'show_title' => array( 'yes' ),
+				),
 			),
 			'title_trim_type' => array(
 				'type'      => 'select',
@@ -180,6 +192,38 @@ class Ava_Woo_Products_List_Shortcode extends Ava_Woo_Builder_Shortcode_Base {
 				'label_off'    => esc_html__( 'No', 'ava-woo-builder' ),
 				'return_value' => 'yes',
 				'default'      => 'yes',
+			),
+			'show_stock_status'        => array(
+				'type'         => 'switcher',
+				'label'        => esc_html__( 'Show Product Stock Status', 'ava-woo-builder' ),
+				'label_on'     => esc_html__( 'Yes', 'ava-woo-builder' ),
+				'label_off'    => esc_html__( 'No', 'ava-woo-builder' ),
+				'return_value' => 'yes',
+				'default'      => '',
+			),
+			'in_stock_status_text'     => array(
+				'type'      => 'text',
+				'label'     => esc_html__( 'Set In Stock Status Text', 'ava-woo-builder' ),
+				'default'   => esc_html__( 'In Stock', 'ava-woo-builder' ),
+				'condition' => array(
+					'show_stock_status' => array( 'yes' ),
+				),
+			),
+			'on_backorder_status_text'  => array(
+				'type'      => 'text',
+				'label'     => esc_html__( 'Set On Backorder Status Text', 'ava-woo-builder' ),
+				'default'   => esc_html__( 'On Backorder', 'ava-woo-builder' ),
+				'condition' => array(
+					'show_stock_status' => array( 'yes' ),
+				),
+			),
+			'out_of_stock_status_text' => array(
+				'type'      => 'text',
+				'label'     => esc_html__( 'Set Out of Stock Status Text', 'ava-woo-builder' ),
+				'default'   => esc_html__( 'Out of Stock', 'ava-woo-builder' ),
+				'condition' => array(
+					'show_stock_status' => array( 'yes' ),
+				),
 			),
 			'show_rating'     => array(
 				'type'         => 'switcher',
@@ -450,6 +494,9 @@ class Ava_Woo_Products_List_Shortcode extends Ava_Woo_Builder_Shortcode_Base {
 				break;
 			case 'current':
 				$query_args = $this->get_wc_catalog_ordering_args( $query_args );
+				break;
+			case 'menu_order':
+				$query_args['orderby']  = 'menu_order';
 				break;
 			default :
 				$query_args['orderby'] = 'date';

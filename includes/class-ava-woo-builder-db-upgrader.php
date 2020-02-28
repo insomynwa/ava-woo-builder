@@ -54,13 +54,16 @@ if ( ! class_exists( 'Ava_Woo_Builder_DB_Upgrader' ) ) {
 		public function init_upgrader() {
 			new CX_Db_Updater( array(
 					'slug'      => 'ava-woo-builder',
-					'version'   => '1.3.0',
+					'version'   => '1.5.0',
 					'callbacks' => array(
 						'1.2.0' => array(
 							array( $this, 'update_db_1_2_0' ),
 						),
 						'1.3.0' => array(
 							array( $this, 'update_db_1_3_0' ),
+						),
+						'1.5.0' => array(
+							array( $this, 'update_db_1_5_0' ),
 						),
 					),
 				)
@@ -214,6 +217,24 @@ if ( ! class_exists( 'Ava_Woo_Builder_DB_Upgrader' ) ) {
 				}
 
 			}
+		}
+
+		/**
+		 * Update db updater 1.5.0
+		 *
+		 * @return void
+		 */
+		public function update_db_1_5_0() {
+
+			$current_version_settings_shop = get_option( $this->shop_key, false );
+
+			if ( $current_version_settings_shop ) {
+				if ( ! isset( $current_version_settings_shop['custom_taxonomy_template'] ) ) {
+					$current_version_settings_shop['custom_taxonomy_template'] = 'no';
+				}
+				update_option( $this->shop_key, $current_version_settings_shop );
+			}
+
 		}
 
 		/**

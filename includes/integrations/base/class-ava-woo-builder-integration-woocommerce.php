@@ -30,6 +30,7 @@ if ( ! class_exists( 'Ava_Woo_Builder_Integration_Woocommerce' ) ) {
 		private $current_template_archive = null;
 		private $current_template_archive_category = null;
 		private $current_template_shop = null;
+		private $current_template_taxonomy = null;
 		private $current_loop = null;
 		private $current_category_args = array();
 
@@ -47,10 +48,13 @@ if ( ! class_exists( 'Ava_Woo_Builder_Integration_Woocommerce' ) ) {
 			}
 
 			if ( 'yes' === ava_woo_builder_shop_settings()->get( 'custom_shop_page' ) ) {
-				add_filter( 'template_include', array(
-					$this,
-					'set_shop_page_template'
-				), 12 /* After Plugins/WooCommerce */ );
+				add_filter( 'template_include', array( $this, 'set_shop_page_template' ), 12 );
+			}
+
+			if ( 'yes' === ava_woo_builder_shop_settings()->get( 'custom_taxonomy_template' ) ) {
+				add_action( 'init',  array( $this, 'taxonomy_meta' ), 99 );
+
+				add_filter( 'template_include', array( $this, 'set_taxonomy_page_template' ), 12 );
 			}
 
 			// Set blank page template for editing product content with Elementor
@@ -145,6 +149,99 @@ if ( ! class_exists( 'Ava_Woo_Builder_Integration_Woocommerce' ) ) {
 				),
 			) );
 
+		}
+
+		/**
+		 * Initialize, edit and update AetWoo Builder templates meta box.
+		 *
+		 * @return void
+		 */
+		public function taxonomy_meta() {
+
+			if( ! is_admin() ){
+				return;
+			}
+
+			$args = array(
+				'public' => true
+			);
+			$output = 'objects';
+			$taxonomies = get_taxonomies( $args, $output );
+
+			foreach ( $taxonomies as $taxonomy ) {
+
+				if ( $taxonomy->name === 'product_cat' || $taxonomy->name === 'product_tag' ) {
+
+					// Add fields in taxonomy create form
+					add_action( $taxonomy->name . '_add_form_fields', array( $this, 'taxonomy_add_new_meta_field' ), 10, 1 );
+					// Add fields in taxonomy edit form
+					add_action( $taxonomy->name . '_edit_form_fields', array( $this, 'taxonomy_edit_meta_field' ), 10, 1 );
+
+					// Process edit form fields
+					add_action( 'edited_' . $taxonomy->name, array( $this, 'save_taxonomy_custom_meta' ), 10, 1 );
+					// Process create form fields
+					add_action( 'create_' . $taxonomy->name, array( $this, 'save_taxonomy_custom_meta' ), 10, 1 );
+
+				}
+
+			}
+
+		}
+
+		/**
+		 * Add fields in taxonomy create form
+		 *
+		 * @return void
+		 */
+		public function taxonomy_add_new_meta_field() {
+			$templates = $this->get_shop_templates(); ?>
+			<div class="form-field">
+				<label for="ava_woo_builder_template"><strong><?php echo esc_html__( 'Custom Template', 'ava-woo-builder' ); ?></strong></label>
+				<select name="ava_woo_builder_template" id="ava_woo_builder_template">
+					<?php foreach ( $templates as $template_id => $template_title ) : ?>
+						<option value="<?php echo esc_attr( $template_id ); ?>"><?php echo esc_attr( $template_title ); ?></option>
+					<?php endforeach; ?>
+				</select>
+				<p><em><?php echo esc_html__( 'It will be applied on singular layout of this term.', 'ava-woo-builder' ); ?></em></p>
+			</div>
+		<?php }
+
+		/**
+		 * Add fields in taxonomy edit form
+		 *
+		 * @param $term
+		 * @return void
+		 */
+		public function taxonomy_edit_meta_field($term) {
+
+			$term_id = $term->term_id;
+			$templates = $this->get_shop_templates();
+			$ava_woo_builder_template = get_term_meta($term_id, 'ava_woo_builder_template', true); ?>
+			<tr class="form-field">
+				<th scope="row" valign="top">
+					<label for="ava_woo_builder_template"><?php echo esc_html__( 'Custom Template', 'ava-woo-builder' ); ?></label>
+				</th>
+				<td>
+					<select name="ava_woo_builder_template" id="ava_woo_builder_template">
+						<?php foreach ( $templates as $template_id => $template_title ) : ?>
+							<option value="<?php echo esc_attr( $template_id ); ?>" <?php selected( $ava_woo_builder_template, $template_id ); ?>><?php echo esc_attr( $template_title ); ?></option>
+						<?php endforeach; ?>
+					</select>
+					<p><em><?php echo esc_html__( 'It will be applied on singular layout of this term.', 'ava-woo-builder' ); ?></em></p>
+				</td>
+			</tr>
+		<?php }
+
+		/**
+		 * Save extra taxonomy fields callback function
+		 *
+		 * @param $term_id
+		 * @return void
+		 */
+		public function save_taxonomy_custom_meta($term_id) {
+			$ava_woo_builder_template = filter_input(INPUT_POST, 'ava_woo_builder_template');
+
+			update_term_meta($term_id, 'ava_woo_builder_template', $ava_woo_builder_template);
 		}
 
 		/**
@@ -325,6 +422,15 @@ if ( ! class_exists( 'Ava_Woo_Builder_Integration_Woocommerce' ) ) {
 		}
 
 		/**
+		 * Returns list of shop templates
+		 *
+		 * @return [type] [description]
+		 */
+		public function get_shop_templates() {
+			return ava_woo_builder_post_type()->get_templates_list_for_options( 'shop' );
+		}
+
+		/**
 		 * Set blank template for editor
 		 */
 		public function set_product_template( $template ) {
@@ -384,6 +490,8 @@ if ( ! class_exists( 'Ava_Woo_Builder_Integration_Woocommerce' ) ) {
 		/**
 		 * Rewrite default shop page template
 		 *
+		 * @param $template
+		 * @return array
 		 */
 		function set_shop_page_template( $template ) {
 
@@ -403,13 +511,33 @@ if ( ! class_exists( 'Ava_Woo_Builder_Integration_Woocommerce' ) ) {
 		}
 
 		/**
+		 * Rewrite default taxonomy page template
+		 *
+		 * @param $template
+		 * @return array
+		 */
+		function set_taxonomy_page_template( $template ) {
+
+			$taxonomy_custom_template = get_term_meta( get_queried_object_id(), 'ava_woo_builder_template', true );
+			$custom_template = $this->get_custom_taxonomy_template();
+
+			if ( is_product_taxonomy() && ! empty( $taxonomy_custom_template ) ) {
+				$this->current_template_taxonomy = $custom_template;
+				$template                        = ava_woo_builder()->get_template( 'woocommerce/archive-product.php' );
+			}
+
+			return $template;
+
+		}
+
+		/**
 		 * Rewrite default single product template
 		 *
 		 * @param  [type] $template [description]
 		 * @param  [type] $slug     [description]
 		 * @param  [type] $name     [description]
 		 *
-		 * @return [type]           [description]
+		 * @return array
 		 */
 		public function rewrite_templates( $template, $slug, $name ) {
 
@@ -707,6 +835,41 @@ if ( ! class_exists( 'Ava_Woo_Builder_Integration_Woocommerce' ) ) {
 			);
 
 			return $this->current_template;
+
+		}
+
+		/**
+		 * Get custom taxonomy template
+		 *
+		 * @return string
+		 */
+		public function get_custom_taxonomy_template() {
+
+			if ( null !== $this->current_template_taxonomy ) {
+				return $this->current_template_taxonomy;
+			}
+
+			$enabled_shop_template     = ava_woo_builder_shop_settings()->get( 'custom_shop_page' );
+			$enabled_taxonomy_template = ava_woo_builder_shop_settings()->get( 'custom_taxonomy_template' );
+
+			$custom_template = false;
+
+			if ( 'yes' === $enabled_shop_template && 'default' !== ava_woo_builder_shop_settings()->get( 'shop_template' ) ) {
+				$custom_template = ava_woo_builder_shop_settings()->get( 'shop_template' );
+			}
+
+			if ( 'yes' === $enabled_taxonomy_template ) {
+				$custom_template = get_term_meta( get_queried_object_id(), 'ava_woo_builder_template', true );
+			}
+
+			if ( ! empty( $custom_template ) ) {
+				$this->current_template_taxonomy =  apply_filters(
+					'ava-woo-builder/custom-taxonomy-template',
+					$custom_template
+				);
+			}
+
+			return $this->current_template_taxonomy;
 
 		}
 

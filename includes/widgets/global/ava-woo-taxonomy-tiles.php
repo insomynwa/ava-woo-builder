@@ -362,10 +362,12 @@ class Ava_Woo_Taxonomy_Tiles extends Ava_Woo_Builder_Base {
 			'layout',
 			array(
 				'label'       => esc_html__( 'Layout', 'ava-woo-builder' ),
+				'label_block' => true,
 				'type'        => Controls_Manager::CHOOSE,
 				'default'     => '2-1-2',
 				'options'     => $available_layouts,
 				'render_type' => 'template',
+				'classes'     => 'ava-woo-builder-layout-control',
 			)
 		);
 
@@ -379,6 +381,16 @@ class Ava_Woo_Taxonomy_Tiles extends Ava_Woo_Builder_Base {
 					'in-content' => esc_html__( 'In content', 'ava-woo-builder' ),
 					'out-of-content' => esc_html__( 'Out of content', 'ava-woo-builder' ),
 				),
+			)
+		);
+
+		$this->add_control(
+			'title_html_tag',
+			array(
+				'label'     => esc_html__( 'Title HTML Tag', 'ava-cw' ),
+				'type'      => Controls_Manager::SELECT,
+				'default'   => 'h5',
+				'options'   => ava_woo_builder_tools()->get_available_title_html_tags(),
 			)
 		);
 

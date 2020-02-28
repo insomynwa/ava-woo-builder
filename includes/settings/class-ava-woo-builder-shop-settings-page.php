@@ -82,7 +82,7 @@ class Ava_Woo_Builder_Shop_Settings_Page extends WC_Settings_Page {
 			),
 
 			array(
-				'title'    => __( 'Archive widgets render method', 'ava-woo-builder' ),
+				'title'    => __( 'Widgets Render Method', 'ava-woo-builder' ),
 				'desc'     => __( 'Select widgets render method for archive product and archive category templates', 'ava-woo-builder' ),
 				'id'       => ava_woo_builder_shop_settings()->options_key . '[widgets_render_method]',
 				'default'  => 'macros',
@@ -105,21 +105,29 @@ class Ava_Woo_Builder_Shop_Settings_Page extends WC_Settings_Page {
 
 			array(
 				'title'   => __( 'Custom Shop Page', 'ava-woo-builder' ),
-				'desc'    => __( 'Enable custom product shop page', 'ava-woo-builder' ),
+				'desc'    => __( 'Enable custom shop page', 'ava-woo-builder' ),
 				'id'      => ava_woo_builder_shop_settings()->options_key . '[custom_shop_page]',
 				'default' => '',
 				'type'    => 'checkbox',
 			),
 
 			array(
-				'title'    => __( 'Products Shop Template', 'ava-woo-builder' ),
-				'desc'     => __( 'Select template to use it as global products shop template', 'ava-woo-builder' ),
+				'title'    => __( 'Shop Template', 'ava-woo-builder' ),
+				'desc'     => __( 'Select template to use it as global shop template', 'ava-woo-builder' ),
 				'id'       => ava_woo_builder_shop_settings()->options_key . '[shop_template]',
 				'doc_type' => 'shop',
 				'default'  => '',
 				'type'     => 'ava_woo_select_template',
 				'class'    => 'wc-enhanced-select-nostd',
 				'css'      => 'min-width:300px;',
+			),
+
+			array(
+				'title'   => __( 'Custom Taxonomy Template', 'ava-woo-builder' ),
+				'desc'    => __( 'Enable custom taxonomy template. Read more about custom template <a href="https://blockcroco.com/knowledge-base/articles/avawoobuilder-how-to-set-up-a-custom-product-taxonomy-template/" target="_blank" rel="nofollow">here</a>', 'ava-woo-builder' ),
+				'id'      => ava_woo_builder_shop_settings()->options_key . '[custom_taxonomy_template]',
+				'default' => '',
+				'type'    => 'checkbox',
 			),
 
 			array(
@@ -159,23 +167,23 @@ class Ava_Woo_Builder_Shop_Settings_Page extends WC_Settings_Page {
 			),
 
 			array(
-				'title' => __( 'Products Archive', 'ava-woo-builder' ),
+				'title' => __( 'Archive Product', 'ava-woo-builder' ),
 				'type'  => 'title',
 				'desc'  => '',
 				'id'    => 'archive_options',
 			),
 
 			array(
-				'title'   => __( 'Custom Products Archive', 'ava-woo-builder' ),
-				'desc'    => __( 'Enable custom product archive page', 'ava-woo-builder' ),
+				'title'   => __( 'Custom Archive Product', 'ava-woo-builder' ),
+				'desc'    => __( 'Enable custom archive product', 'ava-woo-builder' ),
 				'id'      => ava_woo_builder_shop_settings()->options_key . '[custom_archive_page]',
 				'default' => '',
 				'type'    => 'checkbox',
 			),
 
 			array(
-				'title'    => __( 'Products Archive Template', 'ava-woo-builder' ),
-				'desc'     => __( 'Select template to use it as global products archive template', 'ava-woo-builder' ),
+				'title'    => __( 'Archive Product Template', 'ava-woo-builder' ),
+				'desc'     => __( 'Select template to use it as global archive product template', 'ava-woo-builder' ),
 				'id'       => ava_woo_builder_shop_settings()->options_key . '[archive_template]',
 				'doc_type' => 'archive',
 				'default'  => '',
@@ -196,8 +204,8 @@ class Ava_Woo_Builder_Shop_Settings_Page extends WC_Settings_Page {
 			),
 
 			array(
-				'title'    => __( 'Products Shortcode Template', 'ava-woo-builder' ),
-				'desc'     => __( 'Select template to use it as global products shortcode template', 'ava-woo-builder' ),
+				'title'    => __( 'Product Shortcode Template', 'ava-woo-builder' ),
+				'desc'     => __( 'Select template to use it as global product shortcode template', 'ava-woo-builder' ),
 				'id'       => ava_woo_builder_shop_settings()->options_key . '[shortcode_template]',
 				'doc_type' => 'archive',
 				'default'  => '',
@@ -218,8 +226,8 @@ class Ava_Woo_Builder_Shop_Settings_Page extends WC_Settings_Page {
 			),
 
 			array(
-				'title'    => __( 'Cross Sells Products Template', 'ava-woo-builder' ),
-				'desc'     => __( 'Select template to use it as global cross sells products template', 'ava-woo-builder' ),
+				'title'    => __( 'Cross Sells Product Template', 'ava-woo-builder' ),
+				'desc'     => __( 'Select template to use it as global cross sells product template', 'ava-woo-builder' ),
 				'id'       => ava_woo_builder_shop_settings()->options_key . '[cross_sells_template]',
 				'doc_type' => 'archive',
 				'default'  => '',
@@ -234,23 +242,23 @@ class Ava_Woo_Builder_Shop_Settings_Page extends WC_Settings_Page {
 			),
 
 			array(
-				'title' => __( 'Categories Archive', 'ava-woo-builder' ),
+				'title' => __( 'Archive Category', 'ava-woo-builder' ),
 				'type'  => 'title',
 				'desc'  => '',
 				'id'    => 'categories_options',
 			),
 
 			array(
-				'title'   => __( 'Custom Categories Archive', 'ava-woo-builder' ),
-				'desc'    => __( 'Enable custom categories archive page', 'ava-woo-builder' ),
+				'title'   => __( 'Custom Archive Category', 'ava-woo-builder' ),
+				'desc'    => __( 'Enable custom archive category', 'ava-woo-builder' ),
 				'id'      => ava_woo_builder_shop_settings()->options_key . '[custom_archive_category_page]',
 				'default' => '',
 				'type'    => 'checkbox',
 			),
 
 			array(
-				'title'    => __( 'Categories Archive Template', 'ava-woo-builder' ),
-				'desc'     => __( 'Select template to use it as global categories archive template', 'ava-woo-builder' ),
+				'title'    => __( 'Archive Category Template', 'ava-woo-builder' ),
+				'desc'     => __( 'Select template to use it as global archive category template', 'ava-woo-builder' ),
 				'id'       => ava_woo_builder_shop_settings()->options_key . '[category_template]',
 				'doc_type' => 'category',
 				'default'  => '',

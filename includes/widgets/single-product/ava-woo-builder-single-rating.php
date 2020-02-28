@@ -72,6 +72,18 @@ class Ava_Woo_Builder_Single_Rating extends Ava_Woo_Builder_Base {
 		);
 
 		$this->add_control(
+			'show_single_empty_rating',
+			array(
+				'label'        => esc_html__( 'Show Rating if Empty', 'ava-woo-builder' ),
+				'type'         => Controls_Manager::SWITCHER,
+				'label_on'     => esc_html__( 'Yes', 'ava-woo-builder' ),
+				'label_off'    => esc_html__( 'No', 'ava-woo-builder' ),
+				'return_value' => 'true',
+				'default'      => '',
+			)
+		);
+
+		$this->add_control(
 			'rating_icon',
 			array(
 				'label'   => esc_html__( 'Rating Icon', 'ava-woo-builder' ),

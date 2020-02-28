@@ -47,7 +47,11 @@ class Ava_Woo_Categories extends Ava_Woo_Builder_Base {
 	}
 
 	public function get_script_depends() {
-		return array( 'jquery-slick' );
+		return array( 'swiper' );
+	}
+
+	public function get_style_depends() {
+		return array( 'elementor-icons-fa-solid' );
 	}
 
 	protected function _register_controls() {
@@ -118,17 +122,45 @@ class Ava_Woo_Categories extends Ava_Woo_Builder_Base {
 			)
 		);
 
+		$this->add_control(
+			'carousel_direction',
+			array(
+				'label'   => esc_html__( 'Carousel Direction', 'ava-woo-builder' ),
+				'type'    => Controls_Manager::SELECT,
+				'default' => 'horizontal',
+				'options' => array(
+					'horizontal' => esc_html__( 'Horizontal', 'ava-woo-builder' ),
+					'vertical'   => esc_html__( 'Vertical', 'ava-woo-builder' ),
+				),
+			)
+		);
+
+		$this->add_responsive_control(
+			'carousel_height',
+			array(
+				'label'       => esc_html__( 'Carousel Height', 'ava-woo-builder' ),
+				'type'        => Controls_Manager::NUMBER,
+				'default'     => '1500',
+				'render_type' => 'template',
+				'selectors'   => array(
+					'{{WRAPPER}} ' . '.ava-woo-carousel.swiper-container-vertical' => 'max-height: {{VALUE}}px;',
+				),
+				'condition'   => array(
+					'carousel_direction' => 'vertical',
+				),
+			)
+		);
+
 		$this->add_responsive_control(
 			'slides_min_height',
 			array(
 				'label'       => esc_html__( 'Slides Minimal Height', 'ava-woo-builder' ),
-				'label_block' => true,
 				'type'        => Controls_Manager::NUMBER,
 				'default'     => '',
+				'render_type' => 'template',
 				'selectors'   => array(
-					'{{WRAPPER}} ' . $css_scheme['inner-box'] => 'min-height: {{VALUE}}px;',
+					'{{WRAPPER}} ' . '.ava-woo-carousel .ava-woo-categories__inner-box' => 'min-height: {{VALUE}}px;',
 				),
-
 			)
 		);
 
@@ -160,11 +192,11 @@ class Ava_Woo_Categories extends Ava_Woo_Builder_Base {
 		$this->add_control(
 			'prev_arrow',
 			array(
-				'label'     => esc_html__( 'Prev Arrow Icon', 'ava-woo-builder' ),
-				'type'      => Controls_Manager::SELECT,
-				'default'   => 'fa fa-angle-left',
+				'label'       => esc_html__( 'Prev Arrow Icon', 'ava-woo-builder' ),
+				'type'        => Controls_Manager::SELECT,
+				'default'     => 'fa fa-angle-left',
 				'options'   => ava_woo_builder_tools()->get_available_prev_arrows_list(),
-				'condition' => array(
+				'condition'   => array(
 					'arrows' => 'true',
 				),
 			)
@@ -173,11 +205,11 @@ class Ava_Woo_Categories extends Ava_Woo_Builder_Base {
 		$this->add_control(
 			'next_arrow',
 			array(
-				'label'     => esc_html__( 'Next Arrow Icon', 'ava-woo-builder' ),
-				'type'      => Controls_Manager::SELECT,
-				'default'   => 'fa fa-angle-right',
+				'label'       => esc_html__( 'Next Arrow Icon', 'ava-woo-builder' ),
+				'type'        => Controls_Manager::SELECT,
+				'default'     => 'fa fa-angle-right',
 				'options'   => ava_woo_builder_tools()->get_available_next_arrows_list(),
-				'condition' => array(
+				'condition'   => array(
 					'arrows' => 'true',
 				),
 			)
@@ -187,18 +219,6 @@ class Ava_Woo_Categories extends Ava_Woo_Builder_Base {
 			'dots',
 			array(
 				'label'        => esc_html__( 'Show Dots Navigation', 'ava-woo-builder' ),
-				'type'         => Controls_Manager::SWITCHER,
-				'label_on'     => esc_html__( 'Yes', 'ava-woo-builder' ),
-				'label_off'    => esc_html__( 'No', 'ava-woo-builder' ),
-				'return_value' => 'true',
-				'default'      => '',
-			)
-		);
-
-		$this->add_control(
-			'pause_on_hover',
-			array(
-				'label'        => esc_html__( 'Pause on Hover', 'ava-woo-builder' ),
 				'type'         => Controls_Manager::SWITCHER,
 				'label_on'     => esc_html__( 'Yes', 'ava-woo-builder' ),
 				'label_off'    => esc_html__( 'No', 'ava-woo-builder' ),
@@ -226,6 +246,21 @@ class Ava_Woo_Categories extends Ava_Woo_Builder_Base {
 				'type'      => Controls_Manager::NUMBER,
 				'default'   => 5000,
 				'condition' => array(
+					'autoplay' => 'true',
+				),
+			)
+		);
+
+		$this->add_control(
+			'pause_on_interactions',
+			array(
+				'label'        => esc_html__( 'Pause on Interaction', 'ava-woo-builder' ),
+				'type'         => Controls_Manager::SWITCHER,
+				'label_on'     => esc_html__( 'Yes', 'ava-woo-builder' ),
+				'label_off'    => esc_html__( 'No', 'ava-woo-builder' ),
+				'return_value' => 'true',
+				'default'      => '',
+				'condition'    => array(
 					'autoplay' => 'true',
 				),
 			)
@@ -442,6 +477,8 @@ class Ava_Woo_Categories extends Ava_Woo_Builder_Base {
 		$attributes    = array();
 		$settings      = $this->get_settings();
 		$shortcode_obj = $this->__shortcode();
+
+		$shortcode_obj->set_settings( $settings );
 
 		foreach ( $shortcode_obj->get_atts() as $attr => $data ) {
 			$attr_val            = $settings[ $attr ];
@@ -1539,7 +1576,7 @@ class Ava_Woo_Categories extends Ava_Woo_Builder_Base {
 			\Ava_Woo_Group_Control_Box_Style::get_type(),
 			array(
 				'name'           => 'arrows_style',
-				'selector'       => '{{WRAPPER}} .ava-woo-categories .ava-arrow',
+				'selector'       => '{{WRAPPER}} .ava-woo-carousel .ava-arrow',
 				'fields_options' => array(
 					'color' => array(
 						'scheme' => array(
@@ -1564,7 +1601,7 @@ class Ava_Woo_Categories extends Ava_Woo_Builder_Base {
 			\Ava_Woo_Group_Control_Box_Style::get_type(),
 			array(
 				'name'           => 'arrows_hover_style',
-				'selector'       => '{{WRAPPER}} .ava-woo-categories .ava-arrow:hover',
+				'selector'       => '{{WRAPPER}} .ava-woo-carousel .ava-arrow:hover',
 				'fields_options' => array(
 					'color' => array(
 						'scheme' => array(
@@ -1626,7 +1663,7 @@ class Ava_Woo_Categories extends Ava_Woo_Builder_Base {
 					'prev_vert_position' => 'top',
 				),
 				'selectors'  => array(
-					'{{WRAPPER}} .ava-woo-categories .ava-arrow.prev-arrow' => 'top: {{SIZE}}{{UNIT}}; bottom: auto;',
+					'{{WRAPPER}} .ava-woo-carousel .ava-arrow.prev-arrow' => 'top: {{SIZE}}{{UNIT}}; bottom: auto;',
 				),
 			)
 		);
@@ -1655,7 +1692,7 @@ class Ava_Woo_Categories extends Ava_Woo_Builder_Base {
 					'prev_vert_position' => 'bottom',
 				),
 				'selectors'  => array(
-					'{{WRAPPER}} .ava-woo-categories .ava-arrow.prev-arrow' => 'bottom: {{SIZE}}{{UNIT}}; top: auto;',
+					'{{WRAPPER}} .ava-woo-carousel .ava-arrow.prev-arrow' => 'bottom: {{SIZE}}{{UNIT}}; top: auto;',
 				),
 			)
 		);
@@ -1697,7 +1734,7 @@ class Ava_Woo_Categories extends Ava_Woo_Builder_Base {
 					'prev_hor_position' => 'left',
 				),
 				'selectors'  => array(
-					'{{WRAPPER}} .ava-woo-categories .ava-arrow.prev-arrow' => 'left: {{SIZE}}{{UNIT}}; right: auto;',
+					'{{WRAPPER}} .ava-woo-carousel .ava-arrow.prev-arrow' => 'left: {{SIZE}}{{UNIT}}; right: auto;',
 				),
 			)
 		);
@@ -1726,7 +1763,7 @@ class Ava_Woo_Categories extends Ava_Woo_Builder_Base {
 					'prev_hor_position' => 'right',
 				),
 				'selectors'  => array(
-					'{{WRAPPER}} .ava-woo-categories .ava-arrow.prev-arrow' => 'right: {{SIZE}}{{UNIT}}; left: auto;',
+					'{{WRAPPER}} .ava-woo-carousel .ava-arrow.prev-arrow' => 'right: {{SIZE}}{{UNIT}}; left: auto;',
 				),
 			)
 		);
@@ -1777,7 +1814,7 @@ class Ava_Woo_Categories extends Ava_Woo_Builder_Base {
 					'next_vert_position' => 'top',
 				),
 				'selectors'  => array(
-					'{{WRAPPER}} .ava-woo-categories .ava-arrow.next-arrow' => 'top: {{SIZE}}{{UNIT}}; bottom: auto;',
+					'{{WRAPPER}} .ava-woo-carousel .ava-arrow.next-arrow' => 'top: {{SIZE}}{{UNIT}}; bottom: auto;',
 				),
 			)
 		);
@@ -1806,7 +1843,7 @@ class Ava_Woo_Categories extends Ava_Woo_Builder_Base {
 					'next_vert_position' => 'bottom',
 				),
 				'selectors'  => array(
-					'{{WRAPPER}} .ava-woo-categories .ava-arrow.next-arrow' => 'bottom: {{SIZE}}{{UNIT}}; top: auto;',
+					'{{WRAPPER}} .ava-woo-carousel .ava-arrow.next-arrow' => 'bottom: {{SIZE}}{{UNIT}}; top: auto;',
 				),
 			)
 		);
@@ -1848,7 +1885,7 @@ class Ava_Woo_Categories extends Ava_Woo_Builder_Base {
 					'next_hor_position' => 'left',
 				),
 				'selectors'  => array(
-					'{{WRAPPER}} .ava-woo-categories .ava-arrow.next-arrow' => 'left: {{SIZE}}{{UNIT}}; right: auto;',
+					'{{WRAPPER}} .ava-woo-carousel .ava-arrow.next-arrow' => 'left: {{SIZE}}{{UNIT}}; right: auto;',
 				),
 			)
 		);
@@ -1877,7 +1914,7 @@ class Ava_Woo_Categories extends Ava_Woo_Builder_Base {
 					'next_hor_position' => 'right',
 				),
 				'selectors'  => array(
-					'{{WRAPPER}} .ava-woo-categories .ava-arrow.next-arrow' => 'right: {{SIZE}}{{UNIT}}; left: auto;',
+					'{{WRAPPER}} .ava-woo-carousel .ava-arrow.next-arrow' => 'right: {{SIZE}}{{UNIT}}; left: auto;',
 				),
 			)
 		);
@@ -1899,7 +1936,7 @@ class Ava_Woo_Categories extends Ava_Woo_Builder_Base {
 			\Ava_Woo_Group_Control_Box_Style::get_type(),
 			array(
 				'name'           => 'dots_style',
-				'selector'       => '{{WRAPPER}} .ava-woo-carousel .ava-slick-dots li span',
+				'selector'       => '{{WRAPPER}} .ava-woo-carousel .swiper-pagination .swiper-pagination-bullet',
 				'fields_options' => array(
 					'color' => array(
 						'scheme' => array(
@@ -1924,7 +1961,7 @@ class Ava_Woo_Categories extends Ava_Woo_Builder_Base {
 			\Ava_Woo_Group_Control_Box_Style::get_type(),
 			array(
 				'name'           => 'dots_style_hover',
-				'selector'       => '{{WRAPPER}} .ava-woo-carousel .ava-slick-dots li span:hover',
+				'selector'       => '{{WRAPPER}} .ava-woo-carousel .swiper-pagination .swiper-pagination-bullet:hover',
 				'fields_options' => array(
 					'color' => array(
 						'scheme' => array(
@@ -1949,7 +1986,7 @@ class Ava_Woo_Categories extends Ava_Woo_Builder_Base {
 			\Ava_Woo_Group_Control_Box_Style::get_type(),
 			array(
 				'name'           => 'dots_style_active',
-				'selector'       => '{{WRAPPER}} .ava-woo-carousel .ava-slick-dots li.slick-active span',
+				'selector'       => '{{WRAPPER}} .ava-woo-carousel .swiper-pagination .swiper-pagination-bullet-active',
 				'fields_options' => array(
 					'color' => array(
 						'scheme' => array(
@@ -1981,7 +2018,7 @@ class Ava_Woo_Categories extends Ava_Woo_Builder_Base {
 					),
 				),
 				'selectors' => array(
-					'{{WRAPPER}} .ava-woo-carousel .ava-slick-dots li' => 'padding-left: {{SIZE}}{{UNIT}}; padding-right: {{SIZE}}{{UNIT}}',
+					'{{WRAPPER}} .ava-woo-carousel .swiper-pagination .swiper-pagination-bullet' => 'margin: {{SIZE}}{{UNIT}};',
 				),
 				'separator' => 'before',
 			)
@@ -1994,7 +2031,7 @@ class Ava_Woo_Categories extends Ava_Woo_Builder_Base {
 				'type'       => Controls_Manager::DIMENSIONS,
 				'size_units' => array( 'px', '%', 'em' ),
 				'selectors'  => array(
-					'{{WRAPPER}} .ava-woo-carousel .ava-slick-dots' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+					'{{WRAPPER}} .ava-woo-carousel .swiper-pagination' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				),
 			)
 		);
@@ -2006,7 +2043,7 @@ class Ava_Woo_Categories extends Ava_Woo_Builder_Base {
 				'type'      => Controls_Manager::CHOOSE,
 				'default'   => 'center',
 				'options'   => array(
-					'flex-start' => array(
+					'left' => array(
 						'title' => esc_html__( 'Left', 'ava-woo-builder' ),
 						'icon'  => 'fa fa-align-left',
 					),
@@ -2014,13 +2051,168 @@ class Ava_Woo_Categories extends Ava_Woo_Builder_Base {
 						'title' => esc_html__( 'Center', 'ava-woo-builder' ),
 						'icon'  => 'fa fa-align-center',
 					),
-					'flex-end'   => array(
+					'right'   => array(
 						'title' => esc_html__( 'Right', 'ava-woo-builder' ),
 						'icon'  => 'fa fa-align-right',
 					),
 				),
 				'selectors' => array(
-					'{{WRAPPER}} .ava-woo-carousel .ava-slick-dots' => 'justify-content: {{VALUE}};',
+					'{{WRAPPER}} .ava-woo-carousel .swiper-pagination' => 'text-align: {{VALUE}};',
+				),
+				'condition' => array(
+					'carousel_direction' => 'horizontal',
+				),
+			)
+		);
+
+		$this->add_control(
+			'dots_vert_position',
+			array(
+				'label'   => esc_html__( 'Vertical Position by', 'ava-woo-builder' ),
+				'type'    => Controls_Manager::SELECT,
+				'default' => 'top',
+				'options' => array(
+					'top'    => esc_html__( 'Top', 'ava-woo-builder' ),
+					'bottom' => esc_html__( 'Bottom', 'ava-woo-builder' ),
+				),
+				'condition' => array(
+					'carousel_direction' => 'vertical',
+				),
+			)
+		);
+
+		$this->add_responsive_control(
+			'dots_top_position',
+			array(
+				'label'      => esc_html__( 'Top Indent', 'ava-woo-builder' ),
+				'type'       => Controls_Manager::SLIDER,
+				'size_units' => array( 'px', '%', 'em' ),
+				'range'      => array(
+					'px' => array(
+						'min' => - 400,
+						'max' => 400,
+					),
+					'%'  => array(
+						'min' => - 100,
+						'max' => 100,
+					),
+					'em' => array(
+						'min' => - 50,
+						'max' => 50,
+					),
+				),
+				'condition'  => array(
+					'dots_vert_position' => 'top',
+					'carousel_direction' => 'vertical',
+				),
+				'selectors'  => array(
+					'{{WRAPPER}} .ava-woo-carousel .swiper-pagination' => 'top: {{SIZE}}{{UNIT}}; bottom: auto;',
+				),
+			)
+		);
+
+		$this->add_responsive_control(
+			'dots_bottom_position',
+			array(
+				'label'      => esc_html__( 'Bottom Indent', 'ava-woo-builder' ),
+				'type'       => Controls_Manager::SLIDER,
+				'size_units' => array( 'px', '%', 'em' ),
+				'range'      => array(
+					'px' => array(
+						'min' => - 400,
+						'max' => 400,
+					),
+					'%'  => array(
+						'min' => - 100,
+						'max' => 100,
+					),
+					'em' => array(
+						'min' => - 50,
+						'max' => 50,
+					),
+				),
+				'condition'  => array(
+					'dots_vert_position' => 'bottom',
+					'carousel_direction' => 'vertical',
+				),
+				'selectors'  => array(
+					'{{WRAPPER}} .ava-woo-carousel .swiper-pagination' => 'bottom: {{SIZE}}{{UNIT}}; top: auto;',
+				),
+			)
+		);
+
+		$this->add_control(
+			'dots_hor_position',
+			array(
+				'label'     => esc_html__( 'Horizontal Position by', 'ava-woo-builder' ),
+				'type'      => Controls_Manager::SELECT,
+				'default'   => 'right',
+				'options'   => array(
+					'left'  => esc_html__( 'Left', 'ava-woo-builder' ),
+					'right' => esc_html__( 'Right', 'ava-woo-builder' ),
+				),
+				'condition' => array(
+					'carousel_direction' => 'vertical',
+				),
+			)
+		);
+
+		$this->add_responsive_control(
+			'dots_left_position',
+			array(
+				'label'      => esc_html__( 'Left Indent', 'ava-woo-builder' ),
+				'type'       => Controls_Manager::SLIDER,
+				'size_units' => array( 'px', '%', 'em' ),
+				'range'      => array(
+					'px' => array(
+						'min' => - 400,
+						'max' => 400,
+					),
+					'%'  => array(
+						'min' => - 100,
+						'max' => 100,
+					),
+					'em' => array(
+						'min' => - 50,
+						'max' => 50,
+					),
+				),
+				'condition'  => array(
+					'dots_hor_position'  => 'left',
+					'carousel_direction' => 'vertical',
+				),
+				'selectors'  => array(
+					'{{WRAPPER}} .ava-woo-carousel .swiper-pagination' => 'left: {{SIZE}}{{UNIT}}; right: auto;',
+				),
+			)
+		);
+
+		$this->add_responsive_control(
+			'dots_right_position',
+			array(
+				'label'      => esc_html__( 'Right Indent', 'ava-woo-builder' ),
+				'type'       => Controls_Manager::SLIDER,
+				'size_units' => array( 'px', '%', 'em' ),
+				'range'      => array(
+					'px' => array(
+						'min' => - 400,
+						'max' => 400,
+					),
+					'%'  => array(
+						'min' => - 100,
+						'max' => 100,
+					),
+					'em' => array(
+						'min' => - 50,
+						'max' => 50,
+					),
+				),
+				'condition'  => array(
+					'dots_hor_position'  => 'right',
+					'carousel_direction' => 'vertical',
+				),
+				'selectors'  => array(
+					'{{WRAPPER}} .ava-woo-carousel .swiper-pagination' => 'right: {{SIZE}}{{UNIT}}; left: auto;',
 				),
 			)
 		);

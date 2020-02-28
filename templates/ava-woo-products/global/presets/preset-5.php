@@ -13,6 +13,7 @@
         include $this->get_template( 'item-categories' );
         include $this->get_template( 'item-title' );
 		include $this->get_template( 'item-sku' );
+		include $this->get_template( 'item-stock-status' );
 		include $this->get_template( 'item-price' );
         include $this->get_template( 'item-content' );
         include $this->get_template( 'item-button' );

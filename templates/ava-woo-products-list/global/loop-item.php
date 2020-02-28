@@ -17,6 +17,7 @@ $product_id = $product->get_id();
 			include $this->get_template( 'item-sku' );
 			include $this->get_template( 'item-title' );
 			include $this->get_template( 'item-price' );
+			include $this->get_template( 'item-stock-status' );
 			include $this->get_template( 'item-button' );
 			include $this->get_template( 'item-rating' );
 			include $this->get_template( 'item-compare' );

@@ -76,21 +76,25 @@ class Ava_Woo_Products_List extends Ava_Woo_Builder_Base {
 		$css_scheme = apply_filters(
 			'ava-woo-builder/ava-woo-products-list/css-scheme',
 			array(
-				'wrap'        => '.ava-woo-products-list',
-				'item'        => '.ava-woo-products-list .ava-woo-products-list__item',
-				'inner-box'   => '.ava-woo-products-list .ava-woo-products-list__inner-box',
-				'thumb'       => '.ava-woo-products-list .ava-woo-products-list__item-img',
-				'content'     => '.ava-woo-products-list .ava-woo-products-list__item-content',
-				'cats'        => '.ava-woo-products-list .ava-woo-product-categories',
-				'title'       => '.ava-woo-products-list .ava-woo-product-title',
-				'sku'         => '.ava-woo-products-list .ava-woo-product-sku',
-				'price'       => '.ava-woo-products-list .ava-woo-product-price',
-				'rating'      => '.ava-woo-products-list .ava-woo-product-rating',
-				'currency'    => '.ava-woo-products-list .ava-woo-product-price .woocommerce-Price-currencySymbol',
-				'button-wrap' => '.ava-woo-products-list .ava-woo-product-button',
-				'button'      => '.ava-woo-products-list .ava-woo-product-button .button',
-				'view_cart'   => '.ava-woo-products-list .ava-woo-product-button .added_to_cart',
+				'wrap'              => '.ava-woo-products-list',
+				'item'              => '.ava-woo-products-list .ava-woo-products-list__item',
+				'inner-box'         => '.ava-woo-products-list .ava-woo-products-list__inner-box',
+				'thumb'             => '.ava-woo-products-list .ava-woo-products-list__item-img',
+				'content'           => '.ava-woo-products-list .ava-woo-products-list__item-content',
+				'cats'              => '.ava-woo-products-list .ava-woo-product-categories',
+				'title'             => '.ava-woo-products-list .ava-woo-product-title',
+				'sku'               => '.ava-woo-products-list .ava-woo-product-sku',
+				'price'             => '.ava-woo-products-list .ava-woo-product-price',
+				'rating'            => '.ava-woo-products-list .ava-woo-product-rating',
+				'currency'          => '.ava-woo-products-list .ava-woo-product-price .woocommerce-Price-currencySymbol',
+				'button-wrap'       => '.ava-woo-products-list .ava-woo-product-button',
+				'button'            => '.ava-woo-products-list .ava-woo-product-button .button',
+				'view_cart'         => '.ava-woo-products-list .ava-woo-product-button .added_to_cart',
 				'not-found-message' => '.ava-woo-products__not-found',
+				'stock-status'      => '.ava-woo-products-list .ava-woo-product-stock-status',
+				'in-stock'          => '.ava-woo-products-list .ava-woo-product-stock-status__in-stock',
+				'on-backorder'      => '.ava-woo-products-list .ava-woo-product-stock-status__on-backorder',
+				'out-of-stock'      => '.ava-woo-products-list .ava-woo-product-stock-status__out-of-stock',
 			)
 		);
 
@@ -173,6 +177,18 @@ class Ava_Woo_Products_List extends Ava_Woo_Builder_Base {
 		$this->end_controls_section();
 
 		$this->start_controls_section(
+			'section_stock_status_style',
+			array(
+				'label'      => esc_html__( 'Stock Status', 'ava-woo-builder' ),
+				'tab'        => Controls_Manager::TAB_STYLE,
+				'show_label' => false,
+			)
+		);
+		$this->controls_section_stock_status( $css_scheme );
+
+		$this->end_controls_section();
+
+		$this->start_controls_section(
 			'section_rating_styles',
 			array(
 				'label'      => esc_html__( 'Rating', 'ava-woo-builder' ),
@@ -238,6 +254,8 @@ class Ava_Woo_Products_List extends Ava_Woo_Builder_Base {
 		$shortcode_obj = $this->__shortcode();
 
 		$settings['_widget_id'] = $this->get_id();
+
+		$settings = apply_filters( 'ava-woo-builder/ava-woo-products-list/settings', $settings, $this );
 
 		$shortcode_obj->set_settings( $settings );
 
@@ -665,31 +683,6 @@ class Ava_Woo_Products_List extends Ava_Woo_Builder_Base {
 				'size_units' => array( 'px', '%', 'em' ),
 				'selectors'  => array(
 					'{{WRAPPER}} ' . $css_scheme['title'] => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-				),
-			)
-		);
-
-		$this->add_responsive_control(
-			'title_alignment',
-			array(
-				'label'   => esc_html__( 'Alignment', 'ava-woo-builder' ),
-				'type'    => Controls_Manager::CHOOSE,
-				'options' => array(
-					'left' => array(
-						'title' => esc_html__( 'Left', 'ava-woo-builder' ),
-						'icon'  => 'fa fa-align-left',
-					),
-					'center' => array(
-						'title' => esc_html__( 'Center', 'ava-woo-builder' ),
-						'icon'  => 'fa fa-align-center',
-					),
-					'right' => array(
-						'title' => esc_html__( 'Right', 'ava-woo-builder' ),
-						'icon'  => 'fa fa-align-right',
-					),
-				),
-				'selectors'  => array(
-					'{{WRAPPER}} ' . $css_scheme['title']  => 'text-align: {{VALUE}};',
 				),
 			)
 		);
@@ -1182,63 +1175,185 @@ class Ava_Woo_Products_List extends Ava_Woo_Builder_Base {
 
 	}
 
-	protected function controls_section_sku( $css_scheme ) {
+	protected function controls_section_stock_status( $css_scheme ) {
 
 		$this->add_group_control(
 			Group_Control_Typography::get_type(),
 			array(
-				'name'     => 'sku_typography',
+				'name'     => 'stock_status_typography',
 				'scheme'   => Scheme_Typography::TYPOGRAPHY_3,
-				'selector' => '{{WRAPPER}} ' . $css_scheme['sku'],
+				'selector' => '{{WRAPPER}} ' . $css_scheme['stock-status'],
+			)
+		);
+
+		$this->start_controls_tabs( 'tabs_stock_status_colors' );
+
+		$this->start_controls_tab(
+			'tab_stock_status_in_stock',
+			array(
+				'label' => esc_html__( 'In Stock', 'ava-woo-builder' ),
 			)
 		);
 
 		$this->add_control(
-			'sku_bg',
+			'stock_status_in_stock_bg',
 			array(
 				'label'     => esc_html__( 'Background Color', 'ava-woo-builder' ),
 				'type'      => Controls_Manager::COLOR,
 				'selectors' => array(
-					'{{WRAPPER}} ' . $css_scheme['sku'] => 'background-color: {{VALUE}}',
+					'{{WRAPPER}} ' . $css_scheme['in-stock'] => 'background-color: {{VALUE}}',
 				),
 			)
 		);
 
 		$this->add_control(
-			'sku_color',
+			'stock_status_in_stock_color',
 			array(
 				'label'     => esc_html__( 'Color', 'ava-woo-builder' ),
 				'type'      => Controls_Manager::COLOR,
 				'selectors' => array(
-					'{{WRAPPER}} ' . $css_scheme['sku'] => 'color: {{VALUE}}',
+					'{{WRAPPER}} ' . $css_scheme['in-stock'] => 'color: {{VALUE}}',
 				),
 			)
 		);
 
-		$this->add_responsive_control(
-			'sku_alignment',
+		$this->end_controls_tab();
+
+		$this->start_controls_tab(
+			'tab_stock_on_backorder_stock',
 			array(
-				'label'     => esc_html__( 'Alignment', 'ava-woo-builder' ),
-				'type'      => Controls_Manager::CHOOSE,
-				'default'   => 'center',
-				'options'   => array(
-					'left'   => array(
-						'title' => esc_html__( 'Left', 'ava-woo-builder' ),
-						'icon'  => 'fa fa-align-left',
-					),
-					'center' => array(
-						'title' => esc_html__( 'Center', 'ava-woo-builder' ),
-						'icon'  => 'fa fa-align-center',
-					),
-					'right'  => array(
-						'title' => esc_html__( 'Right', 'ava-woo-builder' ),
-						'icon'  => 'fa fa-align-right',
-					),
-				),
+				'label' => esc_html__( 'On Backorder', 'ava-woo-builder' ),
+			)
+		);
+
+		$this->add_control(
+			'stock_status_on_backorder_bg',
+			array(
+				'label'     => esc_html__( 'Background Color', 'ava-woo-builder' ),
+				'type'      => Controls_Manager::COLOR,
 				'selectors' => array(
-					'{{WRAPPER}} ' . $css_scheme['sku'] => 'text-align: {{VALUE}};',
+					'{{WRAPPER}} ' . $css_scheme['on-backorder'] => 'background-color: {{VALUE}}',
 				),
-				'separator' => 'before'
+			)
+		);
+
+		$this->add_control(
+			'stock_status_on_backorder_color',
+			array(
+				'label'     => esc_html__( 'Color', 'ava-woo-builder' ),
+				'type'      => Controls_Manager::COLOR,
+				'selectors' => array(
+					'{{WRAPPER}} ' . $css_scheme['on-backorder'] => 'color: {{VALUE}}',
+				),
+			)
+		);
+
+		$this->end_controls_tab();
+
+		$this->start_controls_tab(
+			'tab_stock_status_out_of_stock',
+			array(
+				'label' => esc_html__( 'Out of Stock', 'ava-woo-builder' ),
+			)
+		);
+
+		$this->add_control(
+			'stock_status_out_of_bg',
+			array(
+				'label'     => esc_html__( 'Background Color', 'ava-woo-builder' ),
+				'type'      => Controls_Manager::COLOR,
+				'selectors' => array(
+					'{{WRAPPER}} ' . $css_scheme['out-of-stock'] => 'background-color: {{VALUE}}',
+				),
+			)
+		);
+
+		$this->add_control(
+			'stock_status_out_of_color',
+			array(
+				'label'     => esc_html__( 'Color', 'ava-woo-builder' ),
+				'type'      => Controls_Manager::COLOR,
+				'selectors' => array(
+					'{{WRAPPER}} ' . $css_scheme['out-of-stock'] => 'color: {{VALUE}}',
+				),
+			)
+		);
+
+		$this->end_controls_tab();
+
+		$this->end_controls_tabs();
+
+		$this->add_responsive_control(
+			'stock_status_padding',
+			array(
+				'label'      => esc_html__( 'Padding', 'ava-woo-builder' ),
+				'type'       => Controls_Manager::DIMENSIONS,
+				'size_units' => array( 'px', '%', 'em' ),
+				'selectors'  => array(
+					'{{WRAPPER}} ' . $css_scheme['stock-status'] => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+					),
+					)
+		);
+
+		$this->add_responsive_control(
+			'stock_status_margin',
+			array(
+				'label'      => esc_html__( 'Margin', 'ava-woo-builder' ),
+				'type'       => Controls_Manager::DIMENSIONS,
+				'size_units' => array( 'px', '%', 'em' ),
+				'selectors'  => array(
+					'{{WRAPPER}} ' . $css_scheme['stock-status'] => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+					),
+					)
+		);
+
+		$this->add_responsive_control(
+			'stock_status_order',
+			array(
+				'type'      => Controls_Manager::NUMBER,
+				'label'     => esc_html__( 'Order', 'ava-woo-builder' ),
+				'default'   => 1,
+				'min'       => 1,
+				'max'       => 10,
+				'step'      => 1,
+				'selectors' => array(
+					'{{WRAPPER}} ' . $css_scheme['stock-status'] => 'order: {{VALUE}}',
+					),
+					)
+				);
+		
+			}
+		
+			protected function controls_section_sku( $css_scheme ) {
+		
+				$this->add_group_control(
+					Group_Control_Typography::get_type(),
+					array(
+						'name'     => 'sku_typography',
+						'scheme'   => Scheme_Typography::TYPOGRAPHY_3,
+						'selector' => '{{WRAPPER}} ' . $css_scheme['sku'],
+					)
+				);
+		
+				$this->add_control(
+					'sku_bg',
+					array(
+						'label'     => esc_html__( 'Background Color', 'ava-woo-builder' ),
+						'type'      => Controls_Manager::COLOR,
+						'selectors' => array(
+							'{{WRAPPER}} ' . $css_scheme['sku'] => 'background-color: {{VALUE}}',
+				),
+				)
+			);
+	
+			$this->add_control(
+				'sku_color',
+				array(
+					'label'     => esc_html__( 'Color', 'ava-woo-builder' ),
+					'type'      => Controls_Manager::COLOR,
+				'selectors' => array(
+					'{{WRAPPER}} ' . $css_scheme['sku'] => 'color: {{VALUE}}',
+				),
 			)
 		);
 

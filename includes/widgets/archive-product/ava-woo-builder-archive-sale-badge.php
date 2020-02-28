@@ -29,8 +29,8 @@ class Ava_Woo_Builder_Archive_Sale_Badge extends Widget_Base {
 		return 'avawoobuilder-icon-11';
 	}
 
-	public function get_ava_help_url() {
-		return 'https://blockcroco.com/knowledge-base/articles/woocommerce-avawoobuilder-settings-how-to-create-and-set-a-custom-categories-archive-template/';
+	public function get_help_url() {
+		return 'https://blockcroco.com/knowledge-base/articles/woocommerce-avawoobuilder-settings-how-to-create-and-set-a-custom-categories-archive-template/?utm_source=need-help&utm_medium=ava-woo-categories&utm_campaign=avawoobuilder';
 	}
 
 	public function get_categories() {
@@ -63,9 +63,10 @@ class Ava_Woo_Builder_Archive_Sale_Badge extends Widget_Base {
 		$this->add_control(
 			'archive_badge_text',
 			array(
-				'type'      => 'text',
-				'label'     => esc_html__( 'Sale Badge Text', 'ava-woo-builder' ),
-				'default'   => 'Sale!',
+				'type'        => 'text',
+				'label'       => esc_html__( 'Sale Badge Text', 'ava-woo-builder' ),
+				'default'     => 'Sale!',
+				'description' => esc_html__( 'Use %percentage_sale% and %numeric_sale% macros to display a withdrawal of discounts as a percentage or numeric of the initial price.', 'ava-woo-builder' ),
 			)
 		);
 

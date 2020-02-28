@@ -194,14 +194,6 @@
 	}
 	
 	&.ava-equal-cols {
-		.slick-track {
-			display: flex;
-			align-items: stretch;
-			.ava-woo-categories__item {
-				flex: 0 0 auto;
-			}
-		}
-		
 		.ava-woo-categories__item {
 			height: auto;
 			display: flex;

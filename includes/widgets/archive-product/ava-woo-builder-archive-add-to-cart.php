@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 } // Exit if accessed directly
 
-class Ava_Woo_Builder_Archive_Add_To_Cart extends Widget_Base {
+class Ava_Woo_Builder_Archive_Add_To_Cart extends Ava_Woo_Builder_Base {
 
 	private $source = false;
 
@@ -379,6 +379,10 @@ class Ava_Woo_Builder_Archive_Add_To_Cart extends Widget_Base {
 	public static function render_callback( $settings = array() ) {
 		global $product;
 
+		if ( ! is_a( $product, 'WC_Product' ) ) {
+			return;
+		}
+
 		$ajax_add_to_cart_enabled = 'yes' === get_option( 'woocommerce_enable_ajax_add_to_cart' ) ? true : false;
 		$popup_enable = ! empty( $settings['ava_woo_builder_cart_popup'] ) ? esc_attr( $settings['ava_woo_builder_cart_popup'] ) : false;
 		$popup_id     = ! empty( $settings['ava_woo_builder_cart_popup_template'] ) ? esc_attr( $settings['ava_woo_builder_cart_popup_template'] ) : '';
@@ -406,7 +410,10 @@ class Ava_Woo_Builder_Archive_Add_To_Cart extends Widget_Base {
 	}
 
 	protected function render() {
+		$this->__open_wrap();
+
 		$settings = $this->get_settings();
+		$settings = apply_filters( 'ava-woo-builder/ava-woo-archive-add-to-cart/settings', $settings, $this );
 
 		$macros_settings = array(
 			'ava_woo_builder_cart_popup'          => json_encode( ! empty( $settings['ava_woo_builder_cart_popup'] ) ? esc_attr( $settings['ava_woo_builder_cart_popup'] ) : false ),
@@ -419,6 +426,7 @@ class Ava_Woo_Builder_Archive_Add_To_Cart extends Widget_Base {
 			echo self::render_callback( $macros_settings );
 		}
 
+		$this->__close_wrap();
 	}
 
 }

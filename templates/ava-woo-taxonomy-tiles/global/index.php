@@ -5,6 +5,7 @@
 
 $settings     = $this->get_settings();
 $title        = ava_woo_builder_tools()->trim_text( $taxonomy->name, $settings['title_length'], 'word', '...' );
+$title_tag    = isset( $settings['title_html_tag'] ) ? $settings['title_html_tag'] : 'h5';
 $description  = ava_woo_builder_tools()->trim_text( $taxonomy->description, $settings['desc_length'], 'symbols', '...' );
 $count_before = $settings['count_before_text'];
 $count_after  = $settings['count_after_text'];
@@ -15,7 +16,7 @@ $thumbnail_key = apply_filters( 'ava-woo-builder/ava-woo-taxonomy-tiles/tax_thum
 	<div class="ava-woo-taxonomy-item__box" <?php $this->__get_tax_bg( $taxonomy, $thumbnail_key ); ?>>
 		<div class="ava-woo-taxonomy-item__box-content"> <div class="ava-woo-taxonomy-item__box-inner"><?php
 			if ( '' !== $title ) {
-				echo sprintf( '<div class="ava-woo-taxonomy-item__box-title">%s</div>', $title );
+				echo '<' . $title_tag . ' class="ava-woo-taxonomy-item__box-title">' . $title . '</' . $title_tag . '>';
 			}
 
 			if ( 'yes' === $settings['show_taxonomy_count'] ) {
